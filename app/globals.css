@@ -1,0 +1,134 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #2d2d2d;
+  --gray-body: #e9e8e4;
+  --accent-green: #4CBB17;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-gray-body: var(--gray-body);
+  --color-accent-green: var(--accent-green);
+  --font-sans: var(--font-inter);
+  --font-heading: var(--font-bricolage);
+}
+
+
+body {
+  background: var(--background);
+}
+
+@theme {
+  /* Headings */
+  --text-h1: 52px;
+  --text-h1--line-height: 48px;
+  --text-h1--font-weight: 800;
+
+  --text-h2: 42px;
+  --text-h2--line-height: 38px;
+  --text-h2--font-weight: 500;
+
+  --text-h3: 26px;
+  --text-h3--line-height: 30px;
+  --text-h3--font-weight: 500;
+
+  --text-h4: 16px;
+  --text-h4--line-height: 24px;
+  --text-h4--font-weight: 700;
+
+  /* Body */
+  --text-body: 16px;
+  --text-body--line-height: 24px;
+
+  --text-body-light--font-weight: 300;
+  --text-body-regular--font-weight: 400;
+  --text-body-medium--font-weight: 500;
+
+  /* Small */
+  --text-small: 14px;
+  --text-small--line-height: 24px;
+
+  --text-xs: 12px;
+  --text-xs--line-height: 16px;
+
+  --text-caption--font-weight: 500;
+}
+@layer base {
+  * {
+    border-color: #d1d1d1;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+  }
+  h1 {
+    font-size: var(--text-h1);
+    line-height: var(--text-h1--line-height);
+    font-weight: var(--text-h1--font-weight);
+  }
+
+  h2 {
+    font-size: var(--text-h2);
+    line-height: var(--text-h2--line-height);
+    font-weight: var(--text-h2--font-weight);
+  }
+
+  h3 {
+    font-size: var(--text-h3);
+    line-height: var(--text-h3--line-height);
+    font-weight: var(--text-h3--font-weight);
+  }
+
+  h4 {
+    font-size: var(--text-h4);
+    line-height: var(--text-h4--line-height);
+    font-weight: var(--text-h4--font-weight);
+  }
+
+  p {
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+    font-weight: var(--text-body-regular--font-weight);
+  }
+}
+
+@layer components {
+  .body-light {
+    font-weight: var(--text-body-light--font-weight);
+  }
+
+  .body-medium {
+    font-weight: var(--text-body-medium--font-weight);
+  }
+
+  .small-text {
+    font-size: var(--text-small);
+    line-height: var(--text-small--line-height);
+  }
+
+  .caption {
+    font-size: var(--text-xs);
+    line-height: var(--text-xs--line-height);
+    font-weight: var(--text-caption--font-weight);
+  }
+
+  .button-text {
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+    font-weight: 500;
+  }
+
+  .bg-accent-green {
+    background-color: var(--accent-green);
+  }
+  
+  .text-accent-green {
+    color: var(--accent-green);
+  }
+
+  .hover-accent-green:hover {
+    color: var(--accent-green);
+  }
+}
