@@ -104,7 +104,7 @@ const Services = () => {
         </div>
 
         {/* RIGHT (Scrollable Cards) */}
-        <div ref={rightRef} className="w-full lg:w-1/2 lg:max-w-lg space-y-12 sm:space-y-16 lg:space-y-20 mt-8 lg:mt-0">
+        <div ref={rightRef} className="w-full lg:w-1/2 lg:max-w-md space-y-12 sm:space-y-16 lg:space-y-20 mt-8 lg:mt-0">
           {servicesData.map((service, index) => (
             <div
               key={index}
