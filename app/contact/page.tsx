@@ -66,7 +66,7 @@ const Contact = () => {
                   </div>
 
                   <div className="flex flex-col">
-                    <label htmlFor="message" className="text-whitez text-sm mb-2 font-medium">Project Details</label>
+                    <label htmlFor="message" className="text-white text-sm mb-2 font-medium">Project Details</label>
                     <textarea 
                       id="message"
                       placeholder="Tell me about your goals, timeline, and what you're looking to build..." 
@@ -78,7 +78,7 @@ const Contact = () => {
 
                   <button 
                     type="submit" 
-                    className="bg-accent-green text-white font-bold rounded-br-[1.5rem] px-8 py-4 w-full hover:bg-accent-green/90 transition-all active:scale-[0.98] uppercase text-sm tracking-widest mt-4"
+                    className="bg-accent-green text-white font-bold rounded-br-3xl px-8 py-4 w-full hover:bg-accent-green/90 transition-all active:scale-[0.98] uppercase text-sm tracking-widest mt-4"
                     onClick={(e) => e.preventDefault()}
                   >
                     Send Message
