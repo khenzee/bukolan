@@ -94,7 +94,7 @@ const Services = () => {
                 a solution that fits your exact needs.
               </p>
               <Link
-                href="#contact"
+                href="/contact"
                 className="inline-block rounded-br-full bg-accent-green text-white px-8 py-4 font-bold hover:bg-accent-green/90 transition-all hover:scale-105 active:scale-95 w-fit uppercase text-sm"
               >
                 Start a Conversation
@@ -146,7 +146,7 @@ const Services = () => {
               a solution that fits your exact needs.
             </p>
             <Link
-              href="#contact"
+              href="/contact"
               className="inline-block rounded-br-full bg-accent-green text-white px-8 py-4 font-bold hover:bg-accent-green/90 transition-all active:scale-95 w-full sm:w-fit text-center uppercase text-sm"
             >
               Start a Conversation

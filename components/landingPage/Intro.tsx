@@ -183,7 +183,7 @@ const Intro = () => {
               </p>
             </div>
             <div ref={magnetRef} className="relative cursor-pointer will-change-transform">
-              <Link href="#about-more" className="block">
+              <Link href="/about" className="block">
                 <div
                   ref={magnetInnerRef}
                   className="about-btn group relative w-40 h-40 rounded-full overflow-hidden will-change-transform"

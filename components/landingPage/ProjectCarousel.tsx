@@ -54,11 +54,11 @@ export default function ProjectCarousel() {
               return `<span class="${className} custom-bullet"></span>`;
             },
           }}
-          className="border border-white/10 bg-white/5 backdrop-blur-md shadow-lg overflow-hidden group"
+          className="border border-white/10 rounded-lg bg-white/5 backdrop-blur-md shadow-lg overflow-hidden group"
         >
           {projects.map((project) => (
             <SwiperSlide key={project.id}>
-              <div className="relative w-full aspect-video">
+              <div className="relative w-full rounded-lg overflow-hidden aspect-video">
                 <Image
                   src={project.image}
                   alt={project.title}

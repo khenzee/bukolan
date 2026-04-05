@@ -17,7 +17,7 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-6 py-4">
         <div className="flex justify-between gap-8 items-center">
           {/* Logo */}
-          <div className="shrink-0 flex items-center">
+          <Link href="/" className="shrink-0 flex items-center">
             <Image 
               src="/images/logo.svg" 
               alt="Logo" 
@@ -25,23 +25,23 @@ const Navbar = () => {
               height={40} 
               className="h-8 mix-blend-screen w-auto"
             />
-          </div>
+          </Link>
 
           {/* Links for Desktop */}
           <div className="hidden md:flex items-center text-white space-x-6">
-            <Link href="#about" className="text-sm font-medium hover:text-accent-green transition-colors uppercase">
+            <Link href="/about" className="text-sm font-medium hover:text-accent-green transition-colors uppercase">
               About Me
             </Link>
-            <Link href="#works" className="text-sm font-medium hover:text-accent-green transition-colors uppercase">
+            <Link href="/works" className="text-sm font-medium hover:text-accent-green transition-colors uppercase">
               Works
             </Link>
-            <Link href="#academy" className="text-sm font-medium hover:text-accent-green transition-colors uppercase">
+            <Link href="/academy" className="text-sm font-medium hover:text-accent-green transition-colors uppercase">
               Academy
             </Link>
             
             {/* CTA */}
             <Link 
-              href="#contact" 
+              href="/contact" 
               className="bg-accent-green rounded-br-full text-white px-8 py-3 font-bold hover:opacity-90 transition-opacity uppercase text-sm ml-4"
             >
               Let&apos;s Talk
@@ -73,21 +73,21 @@ const Navbar = () => {
       >
         <div className="flex flex-col text-center space-y-6 px-8">
           <Link 
-            href="#about" 
+            href="/about" 
             onClick={() => setIsOpen(false)}
             className="text-white text-lg font-medium hover:text-accent-green transition-colors uppercase"
           >
             About Me
           </Link>
           <Link 
-            href="#works" 
+            href="/works" 
             onClick={() => setIsOpen(false)}
             className="text-white text-lg font-medium hover:text-accent-green transition-colors uppercase"
           >
             Works
           </Link>
           <Link 
-            href="#academy" 
+            href="/academy" 
             onClick={() => setIsOpen(false)}
             className="text-white text-lg font-medium hover:text-accent-green transition-colors uppercase"
           >
@@ -96,7 +96,7 @@ const Navbar = () => {
           
           {/* CTA */}
           <Link 
-            href="#contact" 
+            href="/contact" 
             onClick={() => setIsOpen(false)}
             className="bg-accent-green rounded-br-full text-white px-8 py-4 font-bold hover:opacity-90 transition-opacity uppercase text-center w-full mt-4"
           >

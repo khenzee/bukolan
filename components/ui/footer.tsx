@@ -36,7 +36,7 @@ const Footer = () => {
               </Link>
               <p className="text-white/80 text-lg sm:text-xl">+234-704-580-1111</p>
               
-              <Link href="#schedule" className="flex items-center space-x-3 group pt-4 w-fit">
+              <Link href="/contact" className="flex items-center space-x-3 group pt-4 w-fit">
                 <span className="border-b border-accent-green pb-1 text-sm sm:text-base group-hover:text-accent-green transition-colors uppercase font-bold tracking-wide">
                   Schedule A Meeting
                 </span>

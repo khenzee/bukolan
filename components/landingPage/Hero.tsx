@@ -26,7 +26,7 @@ const Hero = () => {
                 I help startups and growing businesses design, build, and structure their digital systems from high-performing websites to internal tools with clarity and long-term thinking.
               </p>
               <Link
-                href="#contact"
+                href="/contact"
                 className="inline-block rounded-br-full bg-accent-green text-white px-8 py-3 font-bold hover:opacity-90 transition-opacity mt-4 lg:mt-0"
               >
                 Let&apos;s Talk
@@ -37,7 +37,7 @@ const Hero = () => {
             <div className="relative w-full lg:w-[300px] flex flex-col mt-12 lg:mt-0">
               <div className="w-full">
                 <div className='flex justify-between items-center mb-6'>
-                  <Link href="/projects" className="group flex items-center gap-2">
+                  <Link href="/works" className="group flex items-center gap-2">
                     <h3 className="text-white group-hover:text-accent-green transition-all duration-300">Projects</h3>
                     <ArrowRight 
                       className='w-6 h-6 group-hover:text-accent-green transition-all duration-300 text-white group-hover:translate-x-2' 
