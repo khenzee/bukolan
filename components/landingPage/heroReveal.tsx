@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 import Image from "next/image";
 
 interface HeroRevealProps {
@@ -33,7 +34,7 @@ export default function HeroReveal({
   const imgRef = useRef<HTMLImageElement | null>(null);
   const blurredCanvasRef = useRef<HTMLCanvasElement | null>(null);
 
-  const renderBlurredVersion = () => {
+  const renderBlurredVersion = useCallback(() => {
     if (!imgRef.current || !containerRef.current) return;
     const { width, height } = containerRef.current.getBoundingClientRect();
     if (width === 0 || height === 0) return;
@@ -55,7 +56,7 @@ export default function HeroReveal({
     bCtx.fillRect(0, 0, width, height);
 
     blurredCanvasRef.current = bCanvas;
-  };
+  }, [blurAmount]);
 
   // ── Preload Image & Pre-render Blurred Version ───
   useEffect(() => {
@@ -65,7 +66,7 @@ export default function HeroReveal({
       imgRef.current = img;
       renderBlurredVersion();
     };
-  }, [imageSrc, blurAmount]);
+  }, [imageSrc, renderBlurredVersion]);
 
   // ── Render Loop ───
   useEffect(() => {
@@ -125,8 +126,52 @@ export default function HeroReveal({
     return () => cancelAnimationFrame(rafRef.current);
   }, [revealRadius]);
 
-  // ── Event Handlers & Auto-Movement ───
-  useEffect(() => {
+  // ── Event Handlers ───
+  const { contextSafe } = useGSAP({ scope: containerRef });
+
+  const animatePoint = contextSafe((pt: TrailPoint, duration: number) => {
+    gsap.to(pt, {
+      opacity: 0,
+      duration,
+      ease: "power2.out",
+    });
+  });
+
+  const onMove = (e: MouseEvent | TouchEvent) => {
+    let clientX, clientY;
+    if ("touches" in e) {
+      clientX = e.touches[0].clientX;
+      clientY = e.touches[0].clientY;
+    } else {
+      clientX = e.clientX;
+      clientY = e.clientY;
+    }
+
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    const x = clientX - rect.left;
+    const y = clientY - rect.top;
+
+    mouseRef.current = { x, y, active: true };
+
+    const prev = trailRef.current[trailRef.current.length - 1];
+    if (!prev || Math.hypot(x - prev.x, y - prev.y) > 8) {
+      const pt: TrailPoint = { x, y, opacity: 1 };
+      trailRef.current.push(pt);
+
+      animatePoint(pt, trailFade);
+
+      if (trailRef.current.length > 60) {
+        trailRef.current.shift();
+      }
+    }
+  };
+
+  const onLeave = () => {
+    mouseRef.current.active = false;
+  };
+
+  useGSAP(() => {
     const container = containerRef.current;
     const canvas = canvasRef.current;
     if (!container || !canvas) return;
@@ -142,96 +187,11 @@ export default function HeroReveal({
     const ro = new ResizeObserver(resize);
     ro.observe(container);
 
-    let autoTween: gsap.core.Tween | null = null;
-    let autoTimer: NodeJS.Timeout | null = null;
-    const virtualCursor = { x: 0, y: 0 };
-
-    const startAutoMove = () => {
-      const w = canvas.width;
-      const h = canvas.height;
-      if (w === 0 || h === 0) return;
-
-      virtualCursor.x = mouseRef.current.active ? mouseRef.current.x : w / 2;
-      virtualCursor.y = mouseRef.current.active ? mouseRef.current.y : h / 2;
-
-      const move = () => {
-        autoTween = gsap.to(virtualCursor, {
-          x: (0.15 + Math.random() * 0.7) * w,
-          y: (0.15 + Math.random() * 0.7) * h,
-          duration: 3 + Math.random() * 3,
-          ease: "sine.inOut",
-          onUpdate: () => {
-            // Only use auto-coordinates if user isn't interacting
-            if (!mouseRef.current.active) {
-              const { x, y } = virtualCursor;
-              const prev = trailRef.current[trailRef.current.length - 1];
-              if (!prev || Math.hypot(x - prev.x, y - prev.y) > 15) {
-                const pt = { x, y, opacity: 1 };
-                trailRef.current.push(pt);
-                gsap.to(pt, { opacity: 0, duration: trailFade * 2, ease: "power1.inOut" });
-              }
-              // Temporarily show the cursor for the auto-move
-              // We'll use a separate ref or logic if we want to distinguish
-            }
-          },
-          onComplete: move,
-        });
-      };
-      move();
-    };
-
-    const onMove = (e: MouseEvent | TouchEvent) => {
-      // Pause auto-movement
-      if (autoTween) autoTween.kill();
-      if (autoTimer) clearTimeout(autoTimer);
-
-      let clientX, clientY;
-      if ("touches" in e) {
-        clientX = e.touches[0].clientX;
-        clientY = e.touches[0].clientY;
-      } else {
-        clientX = e.clientX;
-        clientY = e.clientY;
-      }
-
-      const rect = container.getBoundingClientRect();
-      const x = clientX - rect.left;
-      const y = clientY - rect.top;
-
-      mouseRef.current = { x, y, active: true };
-
-      const prev = trailRef.current[trailRef.current.length - 1];
-      if (!prev || Math.hypot(x - prev.x, y - prev.y) > 8) {
-        const pt: TrailPoint = { x, y, opacity: 1 };
-        trailRef.current.push(pt);
-
-        gsap.to(pt, {
-          opacity: 0,
-          duration: trailFade,
-          ease: "power2.out",
-        });
-
-        if (trailRef.current.length > 60) {
-          trailRef.current.shift();
-        }
-      }
-
-      // Resume auto-movement after 3 seconds of inactivity
-      autoTimer = setTimeout(startAutoMove, 3000);
-    };
-
-    const onLeave = () => {
-      mouseRef.current.active = false;
-    };
-
     container.addEventListener("mousemove", onMove);
     container.addEventListener("mouseleave", onLeave);
     container.addEventListener("touchstart", onMove, { passive: true });
     container.addEventListener("touchmove", onMove, { passive: true });
     container.addEventListener("touchend", onLeave);
-
-    // Initial start of auto-movement
-    autoTimer = setTimeout(startAutoMove, 1000);
 
     return () => {
       container.removeEventListener("mousemove", onMove);
@@ -240,10 +200,8 @@ export default function HeroReveal({
       container.removeEventListener("touchmove", onMove);
       container.removeEventListener("touchend", onLeave);
       ro.disconnect();
-      if (autoTween) autoTween.kill();
-      if (autoTimer) clearTimeout(autoTimer);
     };
-  }, [trailFade, blurAmount]);
+  }, { dependencies: [trailFade, renderBlurredVersion], scope: containerRef });
 
   return (
     <section
