@@ -22,50 +22,80 @@ export default function HeroReveal({
   imageSrc,
   children,
   revealRadius = 80,
-  trailFade = 1.8,
-  blurAmount = 18,
+  trailFade = 1.5,
+  blurAmount = 20,
 }: HeroRevealProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const blurLayerRef = useRef<HTMLDivElement>(null);
   const trailRef = useRef<TrailPoint[]>([]);
   const mouseRef = useRef({ x: -9999, y: -9999, active: false });
   const rafRef = useRef<number>(0);
-  const frameCount = useRef(0);
-  const renderMaskRef = useRef<() => void>(() => {});
+  const imgRef = useRef<HTMLImageElement | null>(null);
+  const blurredCanvasRef = useRef<HTMLCanvasElement | null>(null);
 
-  // ── Keep render function in a ref so it can self-reference ───
+  const renderBlurredVersion = () => {
+    if (!imgRef.current || !containerRef.current) return;
+    const { width, height } = containerRef.current.getBoundingClientRect();
+    if (width === 0 || height === 0) return;
+
+    const bCanvas = document.createElement("canvas");
+    bCanvas.width = width;
+    bCanvas.height = height;
+    const bCtx = bCanvas.getContext("2d");
+    if (!bCtx) return;
+
+    // Draw blurred image
+    bCtx.filter = `blur(${blurAmount}px)`;
+    // Oversize draw to hide edge artifacts from blur
+    bCtx.drawImage(imgRef.current, -20, -20, width + 40, height + 40);
+    
+    // Apply tint directly to the blurred buffer
+    bCtx.filter = "none";
+    bCtx.fillStyle = "rgba(0, 0, 0, 0.45)";
+    bCtx.fillRect(0, 0, width, height);
+
+    blurredCanvasRef.current = bCanvas;
+  };
+
+  // ── Preload Image & Pre-render Blurred Version ───
   useEffect(() => {
-    renderMaskRef.current = () => {
+    const img = new window.Image();
+    img.src = imageSrc;
+    img.onload = () => {
+      imgRef.current = img;
+      renderBlurredVersion();
+    };
+  }, [imageSrc, blurAmount]);
+
+  // ── Render Loop ───
+  useEffect(() => {
+    const render = () => {
       const canvas = canvasRef.current;
-      const blurLayer = blurLayerRef.current;
-      if (!canvas || !blurLayer) return;
+      if (!canvas || !blurredCanvasRef.current) {
+        rafRef.current = requestAnimationFrame(render);
+        return;
+      }
 
       const ctx = canvas.getContext("2d");
       if (!ctx) return;
 
       const { width: w, height: h } = canvas;
 
-      // ─ Step 1: Fill white (white = blur visible) ───────────────
-      ctx.globalAlpha = 1;
+      // 1. Clear and Draw the blurred foreground
       ctx.globalCompositeOperation = "source-over";
       ctx.clearRect(0, 0, w, h);
-      ctx.fillStyle = "#fff";
-      ctx.fillRect(0, 0, w, h);
+      ctx.drawImage(blurredCanvasRef.current, 0, 0);
 
-      // ─ Step 2: Punch soft holes where the trail is ─────────────
+      // 2. Punch holes where the trail is
       ctx.globalCompositeOperation = "destination-out";
 
       // Clean up fully-faded points
       trailRef.current = trailRef.current.filter((p) => p.opacity > 0.01);
-      const points = trailRef.current;
-
-      // Draw a smooth gradient circle at each trail point
-      for (const pt of points) {
-        if (pt.opacity <= 0) continue;
+      
+      for (const pt of trailRef.current) {
         const grad = ctx.createRadialGradient(pt.x, pt.y, 0, pt.x, pt.y, revealRadius);
         grad.addColorStop(0, `rgba(0,0,0,${pt.opacity})`);
-        grad.addColorStop(0.5, `rgba(0,0,0,${pt.opacity * 0.6})`);
+        grad.addColorStop(0.5, `rgba(0,0,0,${pt.opacity * 0.5})`);
         grad.addColorStop(1, "rgba(0,0,0,0)");
 
         ctx.fillStyle = grad;
@@ -74,65 +104,91 @@ export default function HeroReveal({
         ctx.fill();
       }
 
-      // Active cursor — always a full clear circle
+      // Active cursor hole
       if (mouseRef.current.active) {
         const { x, y } = mouseRef.current;
-        const grad = ctx.createRadialGradient(x, y, 0, x, y, revealRadius * 1.1);
+        const grad = ctx.createRadialGradient(x, y, 0, x, y, revealRadius * 1.15);
         grad.addColorStop(0, "rgba(0,0,0,1)");
-        grad.addColorStop(0.55, "rgba(0,0,0,0.8)");
+        grad.addColorStop(0.6, "rgba(0,0,0,0.8)");
         grad.addColorStop(1, "rgba(0,0,0,0)");
 
         ctx.fillStyle = grad;
         ctx.beginPath();
-        ctx.arc(x, y, revealRadius * 1.1, 0, Math.PI * 2);
+        ctx.arc(x, y, revealRadius * 1.15, 0, Math.PI * 2);
         ctx.fill();
       }
 
-      // ─ Step 3: Apply canvas as CSS mask (throttle toDataURL) ───
-      ctx.globalCompositeOperation = "source-over";
-      frameCount.current++;
-
-      // Only serialize to dataURL every 2nd frame for performance
-      if (frameCount.current % 2 === 0 || points.length === 0) {
-        const url = canvas.toDataURL("image/png");
-        blurLayer.style.maskImage = `url(${url})`;
-        blurLayer.style.webkitMaskImage = `url(${url})`;
-        blurLayer.style.maskSize = "100% 100%";
-      }
-
-      rafRef.current = requestAnimationFrame(renderMaskRef.current);
+      rafRef.current = requestAnimationFrame(render);
     };
+
+    rafRef.current = requestAnimationFrame(render);
+    return () => cancelAnimationFrame(rafRef.current);
   }, [revealRadius]);
 
-  // ── Setup listeners ──────────────────────────────────────────
+  // ── Event Handlers & Auto-Movement ───
   useEffect(() => {
     const container = containerRef.current;
     const canvas = canvasRef.current;
     if (!container || !canvas) return;
 
-    // Size canvas to match container
     const resize = () => {
-      const { width, height } = container.getBoundingClientRect();
-      canvas.width = width;
-      canvas.height = height;
+      const rect = container.getBoundingClientRect();
+      canvas.width = rect.width;
+      canvas.height = rect.height;
+      renderBlurredVersion();
     };
     resize();
 
     const ro = new ResizeObserver(resize);
     ro.observe(container);
 
-    // Track mouse or touch and build trail
+    let autoTween: gsap.core.Tween | null = null;
+    let autoTimer: NodeJS.Timeout | null = null;
+    const virtualCursor = { x: 0, y: 0 };
+
+    const startAutoMove = () => {
+      const w = canvas.width;
+      const h = canvas.height;
+      if (w === 0 || h === 0) return;
+
+      virtualCursor.x = mouseRef.current.active ? mouseRef.current.x : w / 2;
+      virtualCursor.y = mouseRef.current.active ? mouseRef.current.y : h / 2;
+
+      const move = () => {
+        autoTween = gsap.to(virtualCursor, {
+          x: (0.15 + Math.random() * 0.7) * w,
+          y: (0.15 + Math.random() * 0.7) * h,
+          duration: 3 + Math.random() * 3,
+          ease: "sine.inOut",
+          onUpdate: () => {
+            // Only use auto-coordinates if user isn't interacting
+            if (!mouseRef.current.active) {
+              const { x, y } = virtualCursor;
+              const prev = trailRef.current[trailRef.current.length - 1];
+              if (!prev || Math.hypot(x - prev.x, y - prev.y) > 15) {
+                const pt = { x, y, opacity: 1 };
+                trailRef.current.push(pt);
+                gsap.to(pt, { opacity: 0, duration: trailFade * 2, ease: "power1.inOut" });
+              }
+              // Temporarily show the cursor for the auto-move
+              // We'll use a separate ref or logic if we want to distinguish
+            }
+          },
+          onComplete: move,
+        });
+      };
+      move();
+    };
+
     const onMove = (e: MouseEvent | TouchEvent) => {
-      if (window.innerWidth < 1024) return; // Only manual on Desktop
+      // Pause auto-movement
+      if (autoTween) autoTween.kill();
+      if (autoTimer) clearTimeout(autoTimer);
 
       let clientX, clientY;
       if ("touches" in e) {
-        if (e.touches.length > 0) {
-          clientX = e.touches[0].clientX;
-          clientY = e.touches[0].clientY;
-        } else {
-          return;
-        }
+        clientX = e.touches[0].clientX;
+        clientY = e.touches[0].clientY;
       } else {
         clientX = e.clientX;
         clientY = e.clientY;
@@ -144,81 +200,28 @@ export default function HeroReveal({
 
       mouseRef.current = { x, y, active: true };
 
-      // Add point only if cursor moved enough
       const prev = trailRef.current[trailRef.current.length - 1];
       if (!prev || Math.hypot(x - prev.x, y - prev.y) > 8) {
         const pt: TrailPoint = { x, y, opacity: 1 };
         trailRef.current.push(pt);
 
-        // GSAP fades the point smoothly
         gsap.to(pt, {
           opacity: 0,
           duration: trailFade,
           ease: "power2.out",
         });
 
-        // Cap trail length to prevent memory bloat
-        if (trailRef.current.length > 80) {
-          trailRef.current.splice(0, 10);
+        if (trailRef.current.length > 60) {
+          trailRef.current.shift();
         }
       }
+
+      // Resume auto-movement after 3 seconds of inactivity
+      autoTimer = setTimeout(startAutoMove, 3000);
     };
-
-    // Autonomous movement for Mobile/Tablet (Smooth Wandering)
-    let autoTween: gsap.core.Tween | null = null;
-    let autoTimer: NodeJS.Timeout | null = null;
-
-    const virtualCursor = {
-      x: canvas.width / 2 || window.innerWidth / 2,
-      y: canvas.height / 2 || window.innerHeight / 2,
-    };
-
-    const moveSmoothly = () => {
-      // Use current canvas dimensions (or fallback to window if canvas not ready)
-      const w = canvas.width || window.innerWidth;
-      const h = canvas.height || window.innerHeight;
-
-      const targetX = (0.15 + Math.random() * 0.7) * w;
-      const targetY = (0.15 + Math.random() * 0.7) * h;
-      const duration = 4 + Math.random() * 4;
-
-      autoTween = gsap.to(virtualCursor, {
-        x: targetX,
-        y: targetY,
-        duration,
-        ease: "sine.inOut",
-        onUpdate: () => {
-          // Only apply auto movement if we're on mobile/tablet
-          if (window.innerWidth >= 1024) return;
-
-          const { x, y } = virtualCursor;
-          mouseRef.current = { x, y, active: true };
-
-          const prev = trailRef.current[trailRef.current.length - 1];
-          if (!prev || Math.hypot(x - prev.x, y - prev.y) > 5) {
-            const pt: TrailPoint = { x, y, opacity: 1 };
-            trailRef.current.push(pt);
-            gsap.to(pt, {
-              opacity: 0,
-              duration: trailFade * 2.5,
-              ease: "power1.inOut",
-            });
-          }
-        },
-        onComplete: moveSmoothly,
-      });
-    };
-    
-    // Start auto movement (it runs silently on desktop, but only applies to the mask on mobile)
-    autoTimer = setTimeout(moveSmoothly, 500);
 
     const onLeave = () => {
-      if (window.innerWidth < 1024) return; // Don't interrupt auto-mode on mobile
-      
       mouseRef.current.active = false;
-      trailRef.current.forEach((p) => {
-        gsap.to(p, { opacity: 0, duration: 0.6, ease: "power1.out" });
-      });
     };
 
     container.addEventListener("mousemove", onMove);
@@ -226,10 +229,9 @@ export default function HeroReveal({
     container.addEventListener("touchstart", onMove, { passive: true });
     container.addEventListener("touchmove", onMove, { passive: true });
     container.addEventListener("touchend", onLeave);
-    container.addEventListener("touchcancel", onLeave);
 
-    // Start render loop
-    rafRef.current = requestAnimationFrame(renderMaskRef.current);
+    // Initial start of auto-movement
+    autoTimer = setTimeout(startAutoMove, 1000);
 
     return () => {
       container.removeEventListener("mousemove", onMove);
@@ -237,24 +239,19 @@ export default function HeroReveal({
       container.removeEventListener("touchstart", onMove);
       container.removeEventListener("touchmove", onMove);
       container.removeEventListener("touchend", onLeave);
-      container.removeEventListener("touchcancel", onLeave);
       ro.disconnect();
-      cancelAnimationFrame(rafRef.current);
       if (autoTween) autoTween.kill();
       if (autoTimer) clearTimeout(autoTimer);
     };
-  }, [trailFade]);
+  }, [trailFade, blurAmount]);
 
   return (
     <section
       ref={containerRef}
-      className="relative w-full min-h-screen overflow-hidden"
+      className="relative w-full min-h-screen overflow-hidden bg-black"
     >
-      {/* Off-screen canvas for mask generation */}
-      <canvas ref={canvasRef} className="hidden" />
-
-      {/* Layer 1: Clear image (shows through where mask is transparent) */}
-      <div className="absolute inset-0">
+      {/* Background Layer (Clear) */}
+      <div className="absolute inset-0 z-0">
         <Image
           src={imageSrc}
           alt="Hero background"
@@ -265,29 +262,14 @@ export default function HeroReveal({
         />
       </div>
 
-      {/* Layer 2: Blurred image + tint (masked by canvas) */}
-      <div ref={blurLayerRef} className="absolute inset-0">
-        <div
-          className="absolute inset-0"
-          style={{
-            filter: `blur(${blurAmount}px)`,
-            transform: "scale(1.06)",
-          }}
-        >
-          <Image
-            src={imageSrc}
-            alt=""
-            fill
-            sizes="100vw"
-            aria-hidden
-            className="object-cover pointer-events-none"
-          />
-        </div>
-        <div className="absolute inset-0 bg-black/40" />
-      </div>
+      {/* Interactive Layer (Blurred + Masked) */}
+      <canvas
+        ref={canvasRef}
+        className="absolute inset-0 z-10 w-full h-full block pointer-events-none"
+      />
 
-      {/* Layer 3: Hero content */}
-      <div className="relative z-10">{children}</div>
+      {/* Content Layer */}
+      <div className="relative z-20 w-full h-full">{children}</div>
     </section>
   );
 }
