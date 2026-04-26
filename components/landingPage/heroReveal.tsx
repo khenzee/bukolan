@@ -45,10 +45,26 @@ export default function HeroReveal({
     const bCtx = bCanvas.getContext("2d");
     if (!bCtx) return;
 
-    // Draw blurred image
+    const img = imgRef.current;
+    const iw = img.naturalWidth || img.width;
+    const ih = img.naturalHeight || img.height;
+
+    // Calculate object-cover dimensions
+    const scale = Math.max(width / iw, height / ih);
+    let drawW = iw * scale;
+    let drawH = ih * scale;
+
+    // Scale up slightly (like the original scale-[1.05]) to hide blur edge artifacts
+    const scaleUp = 1.05;
+    drawW *= scaleUp;
+    drawH *= scaleUp;
+
+    const drawX = (width - drawW) / 2;
+    const drawY = (height - drawH) / 2;
+
+    // Draw blurred image maintaining aspect ratio
     bCtx.filter = `blur(${blurAmount}px)`;
-    // Oversize draw to hide edge artifacts from blur
-    bCtx.drawImage(imgRef.current, -20, -20, width + 40, height + 40);
+    bCtx.drawImage(img, drawX, drawY, drawW, drawH);
     
     // Apply tint directly to the blurred buffer
     bCtx.filter = "none";
