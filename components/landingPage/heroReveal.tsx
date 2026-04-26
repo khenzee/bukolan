@@ -1,8 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useCallback } from "react";
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
 import Image from "next/image";
 
 interface HeroRevealProps {
@@ -26,182 +24,125 @@ export default function HeroReveal({
   trailFade = 1.5,
   blurAmount = 20,
 }: HeroRevealProps) {
+  // ── Refs ───
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const imgRef = useRef<HTMLImageElement | null>(null);
+  
+  const blurredCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const holeCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  
   const trailRef = useRef<TrailPoint[]>([]);
   const mouseRef = useRef({ x: -9999, y: -9999, active: false });
   const rafRef = useRef<number>(0);
-  const imgRef = useRef<HTMLImageElement | null>(null);
-  const blurredCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const lastTimeRef = useRef<number>(0);
 
+  // 1. Pre-render Hole Brush
+  useEffect(() => {
+    const size = revealRadius * 2;
+    const canvas = document.createElement("canvas");
+    canvas.width = size;
+    canvas.height = size;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const grad = ctx.createRadialGradient(revealRadius, revealRadius, 0, revealRadius, revealRadius, revealRadius);
+    grad.addColorStop(0, "rgba(0,0,0,1)");
+    grad.addColorStop(0.5, "rgba(0,0,0,0.5)");
+    grad.addColorStop(1, "rgba(0,0,0,0)");
+
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.arc(revealRadius, revealRadius, revealRadius, 0, Math.PI * 2);
+    ctx.fill();
+
+    holeCanvasRef.current = canvas;
+    
+    return () => {
+      // Memory cleanup for brush
+      canvas.width = 0;
+      canvas.height = 0;
+      holeCanvasRef.current = null;
+    };
+  }, [revealRadius]);
+
+  // 2. Pre-render Blurred Background
   const renderBlurredVersion = useCallback(() => {
-    if (!imgRef.current || !containerRef.current) return;
-    const { width, height } = containerRef.current.getBoundingClientRect();
+    const container = containerRef.current;
+    const img = imgRef.current;
+    if (!img || !container) return;
+
+    const { width, height } = container.getBoundingClientRect();
     if (width === 0 || height === 0) return;
 
-    const bCanvas = document.createElement("canvas");
+    // Reuse existing offscreen canvas to prevent thrashing
+    const bCanvas = blurredCanvasRef.current || document.createElement("canvas");
+    if (!blurredCanvasRef.current) {
+      blurredCanvasRef.current = bCanvas;
+    }
+    
     bCanvas.width = width;
     bCanvas.height = height;
+    
     const bCtx = bCanvas.getContext("2d");
     if (!bCtx) return;
 
-    const img = imgRef.current;
     const iw = img.naturalWidth || img.width;
     const ih = img.naturalHeight || img.height;
 
-    // Calculate object-cover dimensions
-    const scale = Math.max(width / iw, height / ih);
-    let drawW = iw * scale;
-    let drawH = ih * scale;
-
-    // Scale up slightly (like the original scale-[1.05]) to hide blur edge artifacts
-    const scaleUp = 1.05;
-    drawW *= scaleUp;
-    drawH *= scaleUp;
-
+    const scale = Math.max(width / iw, height / ih) * 1.05;
+    const drawW = iw * scale;
+    const drawH = ih * scale;
     const drawX = (width - drawW) / 2;
     const drawY = (height - drawH) / 2;
 
-    // Draw blurred image maintaining aspect ratio
     bCtx.filter = `blur(${blurAmount}px)`;
     bCtx.drawImage(img, drawX, drawY, drawW, drawH);
     
-    // Apply tint directly to the blurred buffer
     bCtx.filter = "none";
-    bCtx.fillStyle = "rgba(0, 0, 0, 0.45)";
+    bCtx.fillStyle = "rgba(0, 0, 0, 0.45)"; // Tint overlay
     bCtx.fillRect(0, 0, width, height);
-
-    blurredCanvasRef.current = bCanvas;
   }, [blurAmount]);
 
-  // ── Preload Image & Pre-render Blurred Version ───
+  // 3. Main Render Loop & Events
   useEffect(() => {
-    const img = new window.Image();
-    img.src = imageSrc;
-    img.onload = () => {
-      imgRef.current = img;
-      renderBlurredVersion();
-    };
-  }, [imageSrc, renderBlurredVersion]);
-
-  // ── Render Loop ───
-  useEffect(() => {
-    const render = () => {
-      const canvas = canvasRef.current;
-      if (!canvas || !blurredCanvasRef.current) {
-        rafRef.current = requestAnimationFrame(render);
-        return;
-      }
-
-      const ctx = canvas.getContext("2d");
-      if (!ctx) return;
-
-      const { width: w, height: h } = canvas;
-
-      // 1. Clear and Draw the blurred foreground
-      ctx.globalCompositeOperation = "source-over";
-      ctx.clearRect(0, 0, w, h);
-      ctx.drawImage(blurredCanvasRef.current, 0, 0);
-
-      // 2. Punch holes where the trail is
-      ctx.globalCompositeOperation = "destination-out";
-
-      // Clean up fully-faded points
-      trailRef.current = trailRef.current.filter((p) => p.opacity > 0.01);
-      
-      for (const pt of trailRef.current) {
-        const grad = ctx.createRadialGradient(pt.x, pt.y, 0, pt.x, pt.y, revealRadius);
-        grad.addColorStop(0, `rgba(0,0,0,${pt.opacity})`);
-        grad.addColorStop(0.5, `rgba(0,0,0,${pt.opacity * 0.5})`);
-        grad.addColorStop(1, "rgba(0,0,0,0)");
-
-        ctx.fillStyle = grad;
-        ctx.beginPath();
-        ctx.arc(pt.x, pt.y, revealRadius, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      // Active cursor hole
-      if (mouseRef.current.active) {
-        const { x, y } = mouseRef.current;
-        const grad = ctx.createRadialGradient(x, y, 0, x, y, revealRadius * 1.15);
-        grad.addColorStop(0, "rgba(0,0,0,1)");
-        grad.addColorStop(0.6, "rgba(0,0,0,0.8)");
-        grad.addColorStop(1, "rgba(0,0,0,0)");
-
-        ctx.fillStyle = grad;
-        ctx.beginPath();
-        ctx.arc(x, y, revealRadius * 1.15, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      rafRef.current = requestAnimationFrame(render);
-    };
-
-    rafRef.current = requestAnimationFrame(render);
-    return () => cancelAnimationFrame(rafRef.current);
-  }, [revealRadius]);
-
-  // ── Event Handlers ───
-  const { contextSafe } = useGSAP({ scope: containerRef });
-
-  const animatePoint = contextSafe((pt: TrailPoint, duration: number) => {
-    gsap.to(pt, {
-      opacity: 0,
-      duration,
-      ease: "power2.out",
-    });
-  });
-
-  const onMove = (e: MouseEvent | TouchEvent) => {
-    let clientX, clientY;
-    if ("touches" in e) {
-      clientX = e.touches[0].clientX;
-      clientY = e.touches[0].clientY;
-    } else {
-      clientX = e.clientX;
-      clientY = e.clientY;
-    }
-
-    if (!containerRef.current) return;
-    const rect = containerRef.current.getBoundingClientRect();
-    const x = clientX - rect.left;
-    const y = clientY - rect.top;
-
-    mouseRef.current = { x, y, active: true };
-
-    const prev = trailRef.current[trailRef.current.length - 1];
-    if (!prev || Math.hypot(x - prev.x, y - prev.y) > 8) {
-      const pt: TrailPoint = { x, y, opacity: 1 };
-      trailRef.current.push(pt);
-
-      animatePoint(pt, trailFade);
-
-      if (trailRef.current.length > 60) {
-        trailRef.current.shift();
-      }
-    }
-  };
-
-  const onLeave = () => {
-    mouseRef.current.active = false;
-  };
-
-  useGSAP(() => {
     const container = containerRef.current;
     const canvas = canvasRef.current;
     if (!container || !canvas) return;
 
-    const resize = () => {
+    // Resize Observer
+    const ro = new ResizeObserver(() => {
       const rect = container.getBoundingClientRect();
       canvas.width = rect.width;
       canvas.height = rect.height;
       renderBlurredVersion();
-    };
-    resize();
-
-    const ro = new ResizeObserver(resize);
+    });
     ro.observe(container);
+
+    // Event Handlers
+    const onMove = (e: MouseEvent | TouchEvent) => {
+      const isTouch = "touches" in e;
+      const clientX = isTouch ? (e as TouchEvent).touches[0].clientX : (e as MouseEvent).clientX;
+      const clientY = isTouch ? (e as TouchEvent).touches[0].clientY : (e as MouseEvent).clientY;
+
+      const rect = container.getBoundingClientRect();
+      const x = clientX - rect.left;
+      const y = clientY - rect.top;
+
+      mouseRef.current = { x, y, active: true };
+
+      const trail = trailRef.current;
+      const prev = trail[trail.length - 1];
+      
+      if (!prev || Math.hypot(x - prev.x, y - prev.y) > 8) {
+        trail.push({ x, y, opacity: 1 });
+        if (trail.length > 60) trail.shift();
+      }
+    };
+
+    const onLeave = () => {
+      mouseRef.current.active = false;
+    };
 
     container.addEventListener("mousemove", onMove);
     container.addEventListener("mouseleave", onLeave);
@@ -209,22 +150,84 @@ export default function HeroReveal({
     container.addEventListener("touchmove", onMove, { passive: true });
     container.addEventListener("touchend", onLeave);
 
+    // Render Loop
+    const render = (time: number) => {
+      const delta = lastTimeRef.current ? (time - lastTimeRef.current) / 1000 : 0;
+      lastTimeRef.current = time;
+
+      const holeBrush = holeCanvasRef.current;
+      const blurredBg = blurredCanvasRef.current;
+      
+      if (!blurredBg || !holeBrush) {
+        rafRef.current = requestAnimationFrame(render);
+        return;
+      }
+
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
+      const { width: w, height: h } = canvas;
+
+      // Draw blurred foreground
+      ctx.globalCompositeOperation = "source-over";
+      ctx.clearRect(0, 0, w, h);
+      ctx.drawImage(blurredBg, 0, 0);
+
+      // Punch holes
+      ctx.globalCompositeOperation = "destination-out";
+      
+      const fadeRate = 1 / trailFade; 
+      
+      // Filter out faded points while updating in place
+      const newTrail: TrailPoint[] = [];
+      for (const pt of trailRef.current) {
+        pt.opacity -= fadeRate * delta;
+        if (pt.opacity > 0.01) {
+          newTrail.push(pt);
+          ctx.globalAlpha = pt.opacity;
+          ctx.drawImage(holeBrush, pt.x - revealRadius, pt.y - revealRadius);
+        }
+      }
+      trailRef.current = newTrail;
+
+      // Active cursor hole
+      if (mouseRef.current.active) {
+        ctx.globalAlpha = 1;
+        const { x, y } = mouseRef.current;
+        const size = revealRadius * 2 * 1.15;
+        const offset = size / 2;
+        ctx.drawImage(holeBrush, x - offset, y - offset, size, size);
+      }
+
+      ctx.globalAlpha = 1;
+      rafRef.current = requestAnimationFrame(render);
+    };
+
+    rafRef.current = requestAnimationFrame(render);
+
+    // Cleanup
     return () => {
+      cancelAnimationFrame(rafRef.current);
+      ro.disconnect();
       container.removeEventListener("mousemove", onMove);
       container.removeEventListener("mouseleave", onLeave);
       container.removeEventListener("touchstart", onMove);
       container.removeEventListener("touchmove", onMove);
       container.removeEventListener("touchend", onLeave);
-      ro.disconnect();
+      
+      // Clean up blurred canvas memory on unmount
+      if (blurredCanvasRef.current) {
+        blurredCanvasRef.current.width = 0;
+        blurredCanvasRef.current.height = 0;
+        blurredCanvasRef.current = null;
+      }
     };
-  }, { dependencies: [trailFade, renderBlurredVersion], scope: containerRef });
+  }, [revealRadius, renderBlurredVersion, trailFade]);
 
   return (
     <section
       ref={containerRef}
       className="relative w-full min-h-screen overflow-hidden bg-black"
     >
-      {/* Background Layer (Clear) */}
       <div className="absolute inset-0 z-0">
         <Image
           src={imageSrc}
@@ -233,16 +236,18 @@ export default function HeroReveal({
           priority
           sizes="100vw"
           className="object-cover pointer-events-none"
+          onLoad={(e) => {
+            imgRef.current = e.currentTarget;
+            renderBlurredVersion();
+          }}
         />
       </div>
 
-      {/* Interactive Layer (Blurred + Masked) */}
       <canvas
         ref={canvasRef}
         className="absolute inset-0 z-10 w-full h-full block pointer-events-none"
       />
 
-      {/* Content Layer */}
       <div className="relative z-20 w-full h-full">{children}</div>
     </section>
   );
