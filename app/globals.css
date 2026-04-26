@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
+  --background: #f9f6f1;
   --foreground: #2d2d2d;
-  --gray-body: #e9e8e4;
+  --gray-body: #f9f6f1;
   --accent-green: #4CBB17;
 }
 
@@ -19,40 +19,41 @@
 
 body {
   background: var(--background);
+  text-transform: uppercase;
 }
 
 @theme {
-  /* Headings */
-  --text-h1: 52px;
-  --text-h1--line-height: 48px;
+  /* Headings — fluid with clamp(min, preferred, max) */
+  --text-h1: clamp(2.25rem, 1.5rem + 2.5vw, 3.25rem);     /* ~36px → 52px */
+  --text-h1--line-height: 0.92;
   --text-h1--font-weight: 800;
 
-  --text-h2: 42px;
-  --text-h2--line-height: 38px;
+  --text-h2: clamp(1.75rem, 1.25rem + 2vw, 2.625rem);      /* ~28px → 42px */
+  --text-h2--line-height: 0.9;
   --text-h2--font-weight: 500;
 
-  --text-h3: 26px;
-  --text-h3--line-height: 30px;
+  --text-h3: clamp(1.25rem, 1rem + 1.25vw, 1.625rem);      /* ~20px → 26px */
+  --text-h3--line-height: 1.15;
   --text-h3--font-weight: 500;
 
-  --text-h4: 16px;
-  --text-h4--line-height: 24px;
+  --text-h4: 1rem;                                           /* 16px */
+  --text-h4--line-height: 1.5;
   --text-h4--font-weight: 700;
 
   /* Body */
-  --text-body: 16px;
-  --text-body--line-height: 24px;
+  --text-body: 1rem;                                         /* 16px */
+  --text-body--line-height: 1.5;
 
   --text-body-light--font-weight: 300;
   --text-body-regular--font-weight: 400;
   --text-body-medium--font-weight: 500;
 
   /* Small */
-  --text-small: 14px;
-  --text-small--line-height: 24px;
+  --text-small: 0.875rem;                                    /* 14px */
+  --text-small--line-height: 1.7;
 
-  --text-xs: 12px;
-  --text-xs--line-height: 16px;
+  --text-xs: 0.75rem;                                        /* 12px */
+  --text-xs--line-height: 1.33;
 
   --text-caption--font-weight: 500;
 }

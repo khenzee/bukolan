@@ -156,19 +156,13 @@ const Intro = () => {
   }, []);
 
   return (
-    <section ref={sectionRef} id="about" className="py-24 bg-white">
+    <section ref={sectionRef} id="about" className="py-24 bg-gray-body">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="">
           {/* Main Copy — words animate gray → color on scroll */}
           <div className="text-left md:text-center">
-            <h2 ref={headingRef} className="mb-8">
-              I help businesses build
-                clarity, structure, and impact
-              in the digital era. Together, we create <span className="text-accent-green">
-                systems, websites, and tools
-              </span>{" "} that set a new standard not just follow trends. No
-              shortcuts, no minimal effort, always precise, thoughtful, and
-              built to scale.
+            <h2 ref={headingRef} className="mb-8 max-w-4xl mx-auto">
+              We help businesses build clarity, structure, and impact in the digital era. We create systems, websites, and digital tools that set a new standard not just follow trends. No shortcuts, no minimal effort, always precise, thoughtful, and built to scale.
             </h2>
           </div>
 
@@ -176,14 +170,13 @@ const Intro = () => {
           <div className="flex lg:justify-center">
             {/* Decorative subtext nearby */}
             <div className="mt-6 max-w-xs">
-              <p className="italic">
+              <p className="">
                 My combination of design, code, and systems thinking allows me
                 uniquely to craft solutions that are beautiful, functional, and
                 built to last.
               </p>
             </div>
             <div ref={magnetRef} className="relative cursor-pointer will-change-transform">
-              <Link href="/about" className="block">
                 <div
                   ref={magnetInnerRef}
                   className="about-btn group relative w-40 h-40 rounded-full overflow-hidden will-change-transform"
@@ -196,29 +189,7 @@ const Intro = () => {
                     sizes="160px"
                     className="object-cover object-top"
                   />
-
-                  {/* Layer 2: Green overlay that shrinks away on hover */}
-                  <div className="about-btn__overlay absolute inset-0 bg-accent-green rounded-full flex flex-col items-center justify-center gap-1 transition-all duration-500 ease-in-out group-hover:scale-0 group-hover:opacity-0">
-                    {/* Arrow icon */}
-                    <svg
-                      className="w-5 h-5 text-white transition-transform duration-300 group-hover:rotate-45"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M7 17L17 7M17 7H7M17 7v10"
-                      />
-                    </svg>
-                    <span className="font-bold uppercase text-xs text-white tracking-wider">
-                      About Me
-                    </span>
-                  </div>
                 </div>
-              </Link>
             </div>
           </div>
         </div>

@@ -21,7 +21,7 @@ const WhyMe = () => {
   ];
 
   return (
-    <section className="py-20 lg:py-24 bg-white">
+    <section className="py-20 lg:py-24 bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="md:text-center mb-12 lg:mb-20">
           <h2 className="mb-4">Why Work With Me?.</h2>

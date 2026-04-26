@@ -54,7 +54,7 @@ export default function ProjectCarousel() {
               return `<span class="${className} custom-bullet"></span>`;
             },
           }}
-          className="border border-white/10 rounded-lg bg-white/5 backdrop-blur-md shadow-lg overflow-hidden group"
+          className="border border-background/10 rounded-lg bg-background/5 backdrop-blur-md shadow-lg overflow-hidden group"
         >
           {projects.map((project) => (
             <SwiperSlide key={project.id}>
@@ -67,7 +67,7 @@ export default function ProjectCarousel() {
                   priority={project.id === 1}
                 />
                 <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent flex items-end p-4">
-                  <h4 className="text-white ">
+                  <h4 className="text-gray-body ">
                     {project.title}
                   </h4>
                 </div>

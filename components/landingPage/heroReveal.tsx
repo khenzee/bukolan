@@ -123,10 +123,10 @@ export default function HeroReveal({
 
     // Track mouse or touch and build trail
     const onMove = (e: MouseEvent | TouchEvent) => {
-      if (window.innerWidth < 1024) return; // Disable effect on mobile/tablet
+      if (window.innerWidth < 1024) return; // Only manual on Desktop
 
       let clientX, clientY;
-      if ('touches' in e) {
+      if ("touches" in e) {
         if (e.touches.length > 0) {
           clientX = e.touches[0].clientX;
           clientY = e.touches[0].clientY;
@@ -164,7 +164,57 @@ export default function HeroReveal({
       }
     };
 
+    // Autonomous movement for Mobile/Tablet (Smooth Wandering)
+    let autoTween: gsap.core.Tween | null = null;
+    let autoTimer: NodeJS.Timeout | null = null;
+
+    const virtualCursor = {
+      x: canvas.width / 2 || window.innerWidth / 2,
+      y: canvas.height / 2 || window.innerHeight / 2,
+    };
+
+    const moveSmoothly = () => {
+      // Use current canvas dimensions (or fallback to window if canvas not ready)
+      const w = canvas.width || window.innerWidth;
+      const h = canvas.height || window.innerHeight;
+
+      const targetX = (0.15 + Math.random() * 0.7) * w;
+      const targetY = (0.15 + Math.random() * 0.7) * h;
+      const duration = 4 + Math.random() * 4;
+
+      autoTween = gsap.to(virtualCursor, {
+        x: targetX,
+        y: targetY,
+        duration,
+        ease: "sine.inOut",
+        onUpdate: () => {
+          // Only apply auto movement if we're on mobile/tablet
+          if (window.innerWidth >= 1024) return;
+
+          const { x, y } = virtualCursor;
+          mouseRef.current = { x, y, active: true };
+
+          const prev = trailRef.current[trailRef.current.length - 1];
+          if (!prev || Math.hypot(x - prev.x, y - prev.y) > 5) {
+            const pt: TrailPoint = { x, y, opacity: 1 };
+            trailRef.current.push(pt);
+            gsap.to(pt, {
+              opacity: 0,
+              duration: trailFade * 2.5,
+              ease: "power1.inOut",
+            });
+          }
+        },
+        onComplete: moveSmoothly,
+      });
+    };
+    
+    // Start auto movement (it runs silently on desktop, but only applies to the mask on mobile)
+    autoTimer = setTimeout(moveSmoothly, 500);
+
     const onLeave = () => {
+      if (window.innerWidth < 1024) return; // Don't interrupt auto-mode on mobile
+      
       mouseRef.current.active = false;
       trailRef.current.forEach((p) => {
         gsap.to(p, { opacity: 0, duration: 0.6, ease: "power1.out" });
@@ -190,6 +240,8 @@ export default function HeroReveal({
       container.removeEventListener("touchcancel", onLeave);
       ro.disconnect();
       cancelAnimationFrame(rafRef.current);
+      if (autoTween) autoTween.kill();
+      if (autoTimer) clearTimeout(autoTimer);
     };
   }, [trailFade]);
 
@@ -213,8 +265,8 @@ export default function HeroReveal({
         />
       </div>
 
-      {/* Layer 2: Blurred image + tint (masked by canvas - Desktop Only) */}
-      <div ref={blurLayerRef} className="absolute inset-0 hidden lg:block">
+      {/* Layer 2: Blurred image + tint (masked by canvas) */}
+      <div ref={blurLayerRef} className="absolute inset-0">
         <div
           className="absolute inset-0"
           style={{
@@ -233,9 +285,6 @@ export default function HeroReveal({
         </div>
         <div className="absolute inset-0 bg-black/40" />
       </div>
-
-      {/* Mobile/Tablet simple static overlay */}
-      <div className="absolute inset-0 mix-blend-overlay bg-black/20 lg:hidden pointer-events-none" />
 
       {/* Layer 3: Hero content */}
       <div className="relative z-10">{children}</div>
