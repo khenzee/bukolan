@@ -25,8 +25,8 @@ const Services = () => {
   return (
     <section className="bg-foreground relative overflow-hidden">
       {/* Header Section */}
-        <div className="py-16 bg-background">
-          <h1 className="text-foreground mx-auto max-w-3xl text-center mb-6">
+        <div className="py-16 px-4 bg-background">
+          <h1 className="text-foreground mx-auto max-w-3xl lg:text-center mb-6">
             Our Services & Capabilities
           </h1>
         </div>

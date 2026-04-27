@@ -1,8 +1,7 @@
 import Hero from "@/components/landingPage/Hero";
 import Intro from "@/components/landingPage/Intro";
 import Services from "@/components/landingPage/Services";
-import WhyMe from "@/components/landingPage/WhyMe";
-import ContactSection from "@/components/ui/footer";
+import Pricing from "@/components/landingPage/Pricing";
 
 export default function Home() {
   return (
@@ -10,8 +9,7 @@ export default function Home() {
       <Hero />
       <Intro />
       <Services />
-      <WhyMe />
-      
+      <Pricing />
     </main>
   );
 }

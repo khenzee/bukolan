@@ -112,6 +112,7 @@ export default function HeroReveal({
 
     // Resize Observer
     const ro = new ResizeObserver(() => {
+      if (window.innerWidth < 1024) return; // Skip canvas resizing on mobile/tablet
       const rect = container.getBoundingClientRect();
       canvas.width = rect.width;
       canvas.height = rect.height;
@@ -121,6 +122,8 @@ export default function HeroReveal({
 
     // Event Handlers
     const onMove = (e: MouseEvent | TouchEvent) => {
+      if (window.innerWidth < 1024) return; // Skip logic on mobile/tablet
+      
       const isTouch = "touches" in e;
       const clientX = isTouch ? (e as TouchEvent).touches[0].clientX : (e as MouseEvent).clientX;
       const clientY = isTouch ? (e as TouchEvent).touches[0].clientY : (e as MouseEvent).clientY;
@@ -152,16 +155,18 @@ export default function HeroReveal({
 
     // Render Loop
     const render = (time: number) => {
+      rafRef.current = requestAnimationFrame(render);
+      
+      // Skip all canvas rendering on mobile/tablet
+      if (window.innerWidth < 1024) return;
+
       const delta = lastTimeRef.current ? (time - lastTimeRef.current) / 1000 : 0;
       lastTimeRef.current = time;
 
       const holeBrush = holeCanvasRef.current;
       const blurredBg = blurredCanvasRef.current;
       
-      if (!blurredBg || !holeBrush) {
-        rafRef.current = requestAnimationFrame(render);
-        return;
-      }
+      if (!blurredBg || !holeBrush) return;
 
       const ctx = canvas.getContext("2d");
       if (!ctx) return;
@@ -199,7 +204,6 @@ export default function HeroReveal({
       }
 
       ctx.globalAlpha = 1;
-      rafRef.current = requestAnimationFrame(render);
     };
 
     rafRef.current = requestAnimationFrame(render);
@@ -228,7 +232,8 @@ export default function HeroReveal({
       ref={containerRef}
       className="relative w-full min-h-screen overflow-hidden bg-black"
     >
-      <div className="absolute inset-0 z-0">
+      {/* Background Layer (Clear - Desktop Only) */}
+      <div className="absolute inset-0 z-0 hidden lg:block">
         <Image
           src={imageSrc}
           alt="Hero background"
@@ -243,9 +248,24 @@ export default function HeroReveal({
         />
       </div>
 
+      {/* Static Blurred Background (Mobile/Tablet Only) */}
+      <div className="absolute inset-0 z-0 lg:hidden overflow-hidden">
+        <Image
+          src={imageSrc}
+          alt="Hero background blurred"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover pointer-events-none scale-[1.05]"
+          style={{ filter: `blur(${blurAmount}px)` }}
+        />
+        <div className="absolute inset-0 bg-black/45" />
+      </div>
+
+      {/* Interactive Layer (Blurred + Masked - Desktop Only) */}
       <canvas
         ref={canvasRef}
-        className="absolute inset-0 z-10 w-full h-full block pointer-events-none"
+        className="absolute inset-0 z-10 w-full h-full hidden lg:block pointer-events-none"
       />
 
       <div className="relative z-20 w-full h-full">{children}</div>
