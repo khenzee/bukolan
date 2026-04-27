@@ -5,62 +5,93 @@ const Footer = () => {
   const socials = [
     { name: 'LinkedIn', url: 'https://linkedin.com/' },
     { name: 'Instagram', url: 'https://instagram.com/' },
-    { name: 'Facebook', url: 'https://facebook.com/' },
     { name: 'Twitter', url: 'https://twitter.com/' },
     { name: 'Github', url: 'https://github.com/' }
   ];
 
   return (
-    <section id="contact" className="py-16 lg:py-24 bg-foreground text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start">
-          {/* Left: Call to Action */}
-          <div>
-            <h2 className="mb-6 lg:mb-12 text-4xl sm:text-5xl lg:text-5xl pr-4">
-              Let Us Turn Your Vision Into Reality
+    <section id="contact" className="bg-foreground text-background overflow-hidden">
+      {/* Massive CTA Block */}
+      <div className="relative py-16 lg:py-28 border-b border-background/10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col items-center text-center">
+          <h1 className="mb-6 max-w-4xl mx-auto tracking-tight">
+            Let&apos;s Discuss Your Project Together
+          </h1>
+          
+          <p className="text-background/70 max-w-xl mx-auto mb-10 lg:mb-12 font-medium text-lg lg:text-xl leading-relaxed">
+            Fill the brief form and we&apos;ll contact you shortly with a clear project plan.
+          </p>
+
+          <Link 
+            href="/contact"
+            className="inline-flex items-center justify-center px-10 py-4 rounded-full border border-background uppercase tracking-widest text-sm font-bold hover:bg-background hover:text-foreground transition-all duration-500"
+          >
+            Fill The Form
+          </Link>
+        </div>
+      </div>
+
+      {/* Footer Info / Contact Details */}
+      <div className="pt-8 pb-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 lg:gap-16 mb-12 lg:mb-20">
+            
+            {/* Column 1: Location (Left on desktop) */}
+            <div className="space-y-6 text-center md:text-left">
+              <h3 className="text-background/40 uppercase tracking-widest text-xs font-bold mb-4">Location</h3>
+              <div className="space-y-3 flex flex-col items-center md:items-start">
+                <p className="text-lg md:text-xl text-background/80 leading-relaxed font-medium">
+                  Lagos, Nigeria<br />
+                  Available Worldwide
+                </p>
+              </div>
+            </div>
+
+            {/* Column 2: Contact (Center on desktop) */}
+            <div className="space-y-6 text-center">
+              <h3 className="text-background/40 uppercase tracking-widest text-xs font-bold mb-4">Contact</h3>
+              <div className="space-y-3 flex flex-col items-center">
+                <Link href="mailto:hello@divulge.digital" className="block text-xl md:text-2xl font-medium hover:text-background/70 transition-colors">
+                  hello@divulge.digital
+                </Link>
+                <p className="text-xl md:text-2xl font-medium">+234 704 580 1111</p>
+              </div>
+            </div>
+
+            {/* Column 3: Socials (Right on desktop) */}
+            <div className="space-y-6 text-center md:text-right">
+              <h3 className="text-background/40 uppercase tracking-widest text-xs font-bold mb-4">Socials</h3>
+              <div className="flex flex-col items-center md:items-end space-y-3">
+                {socials.map((social) => (
+                  <Link 
+                    key={social.name} 
+                    href={social.url} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-lg md:text-xl text-background/80 hover:text-background transition-colors w-fit font-medium"
+                  >
+                    {social.name}
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+          </div>
+
+          {/* Bottom Metabar */}
+          <div className="w-full border-t border-background/20 pt-6 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
+            <span className="text-background/60 text-sm font-medium">© {new Date().getFullYear()} Divulge Digital. All rights reserved.</span>
+            <span className="text-background/60 text-sm font-medium flex items-center justify-center gap-3">
+              Crafted for Growth <span className="w-1.5 h-1.5 rounded-full bg-background/60"></span>
+            </span>
+          </div>
+
+          {/* Giant Agency Name */}
+          <div className="mt-8 lg:mt-12 w-full flex justify-center items-center">
+            <h2 className="text-[17vw] leading-[0.8] font-bold tracking-tighter uppercase text-transparent bg-clip-text bg-gradient-to-b from-background via-background/50 to-transparent select-none text-center">
+              Divulge
             </h2>
           </div>
-
-          {/* Right: Contact Form / Details */}
-          <div className="space-y-8">
-            <div>
-              <h3 className="text-accent-green mb-3 lg:mb-4 text-2xl sm:text-3xl">Get in Touch</h3>
-              <p className="text-white/70 max-w-md text-sm sm:text-base leading-relaxed">
-                Whenever you&apos;re ready, reach out. We can help take you to the next level.
-              </p>
-            </div>
-
-            <div className="space-y-3 sm:space-y-4">
-              <Link href="mailto:hello@bukolan.com" className="block text-lg sm:text-xl hover:text-accent-green transition-colors">
-                hello@bukolan.com
-              </Link>
-              <p className="text-white/80 text-lg sm:text-xl">+234-704-580-1111</p>
-              
-              <Link href="/contact" className="flex items-center space-x-3 group pt-4 w-fit">
-                <span className="border-b border-accent-green pb-1 text-sm sm:text-base group-hover:text-accent-green transition-colors uppercase font-bold tracking-wide">
-                  Schedule A Meeting
-                </span>
-                <svg className="w-5 h-5 group-hover:translate-x-2 transition-transform text-accent-green" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
-              </Link>
-            </div>
-          </div>
-        </div>
-
-        {/* Footer Socials */}
-        <div className="mt-16 lg:mt-24 pt-8 lg:pt-10 border-t border-white/20 flex flex-wrap gap-x-6 gap-y-4 justify-start">
-          {socials.map((social) => (
-            <Link 
-              key={social.name} 
-              href={social.url} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-white hover:text-accent-green uppercase transition-colors text-sm sm:text-base tracking-wider font-medium"
-            >
-              {social.name}
-            </Link>
-          ))}
         </div>
       </div>
     </section>
