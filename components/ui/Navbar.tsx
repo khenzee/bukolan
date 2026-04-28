@@ -41,7 +41,7 @@ const Navbar = () => {
             
             {/* CTA */}
             <Link 
-              href="/contact" 
+              href="?form=lite" 
               className="bg-accent-green rounded-br-full text-white px-8 py-3 font-bold hover:opacity-90 transition-opacity uppercase text-sm ml-4"
             >
               Let&apos;s Talk
@@ -96,7 +96,7 @@ const Navbar = () => {
           
           {/* CTA */}
           <Link 
-            href="/contact" 
+            href="?form=lite" 
             onClick={() => setIsOpen(false)}
             className="bg-accent-green rounded-br-full text-white px-8 py-4 font-bold hover:opacity-90 transition-opacity uppercase text-center w-full mt-4"
           >

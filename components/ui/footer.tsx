@@ -1,7 +1,12 @@
+"use client";
+
 import React from 'react'
 import Link from 'next/link'
+import { useFormModal } from '@/components/landingPage/FormModalContext'
 
 const Footer = () => {
+  const { openForm } = useFormModal();
+
   const socials = [
     { name: 'LinkedIn', url: 'https://linkedin.com/' },
     { name: 'Instagram', url: 'https://instagram.com/' },
@@ -22,12 +27,12 @@ const Footer = () => {
             Fill the brief form and we&apos;ll contact you shortly with a clear project plan.
           </p>
 
-          <Link 
-            href="/contact"
-            className="inline-flex items-center justify-center px-10 py-4 rounded-full border border-background uppercase tracking-widest text-sm font-bold hover:bg-background hover:text-foreground transition-all duration-500"
+          <button 
+            onClick={() => openForm('lite')}
+            className="inline-flex items-center justify-center px-10 py-4 rounded-full border border-background uppercase tracking-widest text-sm font-bold hover:bg-background hover:text-foreground transition-all duration-500 cursor-pointer"
           >
             Fill The Form
-          </Link>
+          </button>
         </div>
       </div>
 

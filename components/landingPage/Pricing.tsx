@@ -1,8 +1,23 @@
+"use client";
+
 import React from 'react';
-import Link from 'next/link';
+import { useFormModal } from './FormModalContext';
+
+type PlanTier = 'lite' | 'scale' | 'grand';
 
 const Pricing = () => {
-  const plans = [
+  const { openForm } = useFormModal();
+
+  const plans: {
+    name: string;
+    price: string;
+    subtitle: string;
+    target: string;
+    description: string;
+    includes: string[];
+    ctaText: string;
+    tier: PlanTier;
+  }[] = [
     {
       name: "Lite",
       price: "$200 / project",
@@ -18,7 +33,7 @@ const Pricing = () => {
         "Timeline: 1–2 weeks"
       ],
       ctaText: "choose Lite",
-      href: "/contact"
+      tier: "lite"
     },
     {
       name: "Scale",
@@ -35,7 +50,7 @@ const Pricing = () => {
         "Timeline: 1–3 weeks"
       ],
       ctaText: "choose Scale",
-      href: "/contact"
+      tier: "scale"
     },
     {
       name: "Grand",
@@ -52,7 +67,7 @@ const Pricing = () => {
         "Timeline: Based on scope"
       ],
       ctaText: "choose Grand",
-      href: "/contact"
+      tier: "grand"
     }
   ];
 
@@ -64,7 +79,7 @@ const Pricing = () => {
             Clear pricing for different types of collaboration.
           </h2>
           <p className="text-foreground max-w-xl mx-auto text-lg sm:text-xl">
-            Start small, scale when you’re ready, or build something fully custom.
+            Start small, scale when you{"'"}re ready, or build something fully custom.
           </p>
         </div>
 
@@ -108,12 +123,12 @@ const Pricing = () => {
 
               {/* CTA */}
               <div className="mt-auto pt-4">
-                <Link 
-                  href={plan.href}
-                  className="flex items-center justify-center w-full py-2 rounded-full border-2 border-foreground text-lg hover:bg-foreground hover:text-background transition-all duration-300 group-hover:bg-foreground group-hover:text-background"
+                <button 
+                  onClick={() => openForm(plan.tier)}
+                  className="flex items-center justify-center w-full py-2 rounded-full border-2 border-foreground text-lg hover:bg-foreground hover:text-background transition-all duration-300 group-hover:bg-foreground group-hover:text-background cursor-pointer"
                 >
                   {plan.ctaText}
-                </Link>
+                </button>
               </div>
             </div>
           ))}

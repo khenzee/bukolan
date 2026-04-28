@@ -74,7 +74,7 @@ const Process = () => {
                 key={step.id} 
                 className="w-full px-4 py-8"
               >
-                <div className="mx-auto w-full max-w-[320px] sm:max-w-sm aspect-[3/4] sm:aspect-square flex flex-col items-center justify-center bg-background border border-foreground/20 rounded-xl p-8 shadow-xl">
+                <div className="mx-auto w-full max-w-[320px] sm:max-w-sm aspect-3/4 sm:aspect-square flex flex-col items-center justify-center bg-background border border-foreground/20 rounded-xl p-8 shadow-xl">
                   <p className='mb-6 text-center text-sm font-bold tracking-widest text-foreground/50'>0{step.id}</p>
                   <div className="w-16 h-16 mb-8 flex items-center justify-center rounded-2xl bg-foreground text-background">
                     <Icon size={28} strokeWidth={1.5} />
