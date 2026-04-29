@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, Loader2, CheckCircle2 } from 'lucide-react';
 import { useFormModal } from './FormModalContext';
 import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
+import { useLenis } from 'lenis/react';
 
 type PlanTier = 'lite' | 'scale' | 'grand';
 
@@ -246,6 +247,19 @@ const PLANS: Record<PlanTier, PlanConfig> = {
 const ProjectFormModal = () => {
   const { isOpen, activePlan, openForm, closeForm } = useFormModal();
   const submitInquiry = useMutation(api.submissions.submitForm);
+  const lenis = useLenis();
+
+  // Stop Lenis when modal is open
+  useEffect(() => {
+    if (isOpen) {
+      lenis?.stop();
+    } else {
+      lenis?.start();
+    }
+    return () => {
+      lenis?.start();
+    };
+  }, [isOpen, lenis]);
 
   // Form State
   const [personalInfo, setPersonalInfo] = useState<Record<string, string>>({});
@@ -424,7 +438,10 @@ const ProjectFormModal = () => {
           </div>
 
           {/* ── Scrollable Body ── */}
-          <div className="flex-1 overflow-y-auto px-6 sm:px-8 py-6 relative">
+          <div 
+            className="flex-1 overflow-y-auto px-6 sm:px-8 py-6 relative"
+            data-lenis-prevent
+          >
             
             {/* Success Overlay */}
             {status === 'success' && (

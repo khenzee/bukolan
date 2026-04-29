@@ -72,7 +72,7 @@ const Pricing = () => {
   ];
 
   return (
-    <section className="py-20 lg:py-32 bg-background border-t border-foreground/10">
+    <section id="pricing" className="py-20 lg:py-32 bg-background border-t border-foreground/10">
       <div className="max-w-7xl mx-auto px-4 lg:px-8">
         <div className="lg:text-center max-w-3xl mx-auto mb-16 lg:mb-16">
           <h2 className=" mb-6">

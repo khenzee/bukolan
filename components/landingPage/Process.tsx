@@ -46,7 +46,7 @@ const Process = () => {
   const [activeIndex, setActiveIndex] = useState(0);
 
   return (
-    <section className="relative py-24 lg:py-32 bg-background border-t border-foreground/10 overflow-hidden">
+    <section id="process" className="relative py-24 lg:py-32 bg-background border-t border-foreground/10 overflow-hidden">
       {/* Header */}
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8 relative z-10">
         <div className="text-center">

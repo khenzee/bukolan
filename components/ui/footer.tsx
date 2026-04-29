@@ -85,15 +85,20 @@ const Footer = () => {
 
           {/* Bottom Metabar */}
           <div className="w-full border-t border-background/20 pt-6 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
-            <span className="text-background/60 text-sm font-medium">© {new Date().getFullYear()} Divulge Digital. All rights reserved.</span>
-            <span className="text-background/60 text-sm font-medium flex items-center justify-center gap-3">
-              Crafted for Growth <span className="w-1.5 h-1.5 rounded-full bg-background/60"></span>
-            </span>
+            <div className="flex flex-col items-center md:items-start leading-[0.8] group">
+              <span className="text-xl font-black tracking-tighter uppercase text-transparent bg-clip-text bg-linear-to-br from-white to-white/60">
+                Divulge
+              </span>
+              <span className="text-[10px] font-bold tracking-[0.6em] uppercase ml-1 text-transparent bg-clip-text bg-linear-to-b from-background to-background/60">
+                Digital
+              </span>
+            </div>
+            <span className="text-background/60 text-sm font-medium">© {new Date().getFullYear()} All rights reserved.</span>
           </div>
 
           {/* Giant Agency Name */}
-          <div className="mt-8 lg:mt-12 w-full flex justify-center items-center">
-            <h2 className="text-[17vw] leading-[0.8] font-bold tracking-tighter uppercase text-transparent bg-clip-text bg-gradient-to-b from-background via-background/50 to-transparent select-none text-center">
+          <div className="mt-12 lg:mt-20 w-full flex flex-col justify-center items-center select-none text-center">
+            <h2 className="text-[18vw] leading-[0.75] font-black tracking-tighter uppercase text-transparent bg-clip-text bg-linear-to-b from-background via-background/40 to-transparent">
               Divulge
             </h2>
           </div>
