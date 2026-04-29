@@ -16,8 +16,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Bukola | Organized Scalable Digital Systems",
-  description: "Helping startups and growing businesses build clarity, structure, and impact.",
+  title: "Divulge Digital | Agency for Businesses and Innovative Minds.",
+  description: "Helping growing businesses and startups build clarity, structure, and impact.",
 };
 
 import SmoothScroll from "@/components/SmoothScroll";
