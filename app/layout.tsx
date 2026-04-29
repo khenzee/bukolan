@@ -20,6 +20,8 @@ export const metadata: Metadata = {
   description: "Helping startups and growing businesses build clarity, structure, and impact.",
 };
 
+import SmoothScroll from "@/components/SmoothScroll";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -32,9 +34,11 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col font-sans">
         <Providers>
-          <Navbar />
-          {children}
-          <Footer />
+          <SmoothScroll>
+            <Navbar />
+            {children}
+            <Footer />
+          </SmoothScroll>
         </Providers>
       </body>
     </html>
