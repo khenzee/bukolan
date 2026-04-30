@@ -4,6 +4,8 @@ import React from 'react'
 import Link from 'next/link'
 import { useFormModal } from '@/components/landingPage/FormModalContext'
 
+import Image from 'next/image'
+
 const Footer = () => {
   const { openForm } = useFormModal();
 
@@ -85,13 +87,14 @@ const Footer = () => {
 
           {/* Bottom Metabar */}
           <div className="w-full border-t border-background/20 pt-6 flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
-            <div className="flex flex-col items-center md:items-start leading-[0.8] group">
-              <span className="text-xl font-black tracking-tighter uppercase text-transparent bg-clip-text bg-linear-to-br from-white to-white/60">
-                Divulge
-              </span>
-              <span className="text-[10px] font-bold tracking-[0.6em] uppercase ml-1 text-transparent bg-clip-text bg-linear-to-b from-background to-background/60">
-                Digital
-              </span>
+            <div className="flex flex-col items-center md:items-start group">
+              <Image 
+                src="/images/divulge-text-white-logo.svg" 
+                alt="Divulge Digital" 
+                width={120} 
+                height={40} 
+                className="h-8 w-auto opacity-80 group-hover:opacity-100 transition-opacity"
+              />
             </div>
             <span className="text-background/60 text-caption font-medium">© {new Date().getFullYear()} All rights reserved.</span>
           </div>

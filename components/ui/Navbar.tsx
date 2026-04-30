@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
 import { Menu, X } from 'lucide-react'
 import { useLenis } from 'lenis/react'
@@ -35,14 +36,16 @@ const Navbar = () => {
     <nav className="fixed bg-foreground rounded-br-[3rem] left-0 top-0 z-50 w-full md:w-auto transition-all duration-300 shadow-xl">
       <div className="max-w-7xl mx-auto px-6 py-4">
         <div className="flex justify-between gap-12 items-center">
-          {/* Text Logo */}
-          <Link href="/" className="shrink-0 flex flex-col items-start leading-[0.8] group">
-            <span className="text-xl font-black tracking-tighter uppercase text-transparent bg-clip-text bg-linear-to-b from-white to-white/60">
-              Divulge
-            </span>
-            <span className="text-[10px] font-bold tracking-[0.6em] uppercase ml-1 text-transparent bg-clip-text bg-linear-to-b from-background to-background/60">
-              Digital
-            </span>
+          {/* Logo */}
+          <Link href="/" className="shrink-0 flex items-center group">
+            <Image 
+              src="/images/divulge-text-white-logo.svg" 
+              alt="Divulge Digital" 
+              width={140} 
+              height={46} 
+              className="h-8 w-auto"
+              priority
+            />
           </Link>
 
           {/* Links for Desktop */}
