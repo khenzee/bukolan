@@ -46,22 +46,22 @@ const Navbar = () => {
           </Link>
 
           {/* Links for Desktop */}
-          <div className="hidden md:flex items-center text-white space-x-8">
+          <div className="hidden md:flex items-center text-background space-x-8">
             <button 
               onClick={() => handleScrollTo('#projects')}
-              className="text-[10px] tracking-widest font-bold hover:text-accent-green transition-colors uppercase cursor-pointer"
+              className="text-caption hover:text-accent-green transition-colors cursor-pointer"
             >
               Projects
             </button>
             <button 
               onClick={() => handleScrollTo('#process')}
-              className="text-[10px] tracking-widest font-bold hover:text-accent-green transition-colors uppercase cursor-pointer"
+              className="text-caption hover:text-accent-green transition-colors cursor-pointer"
             >
               Process
             </button>
             <button 
               onClick={() => handleScrollTo('#pricing')}
-              className="text-[10px] tracking-widest font-bold hover:text-accent-green transition-colors uppercase cursor-pointer"
+              className="text-caption hover:text-accent-green transition-colors cursor-pointer"
             >
               Pricing
             </button>
@@ -69,7 +69,7 @@ const Navbar = () => {
             {/* CTA */}
             <button 
               onClick={() => openForm('lite')}
-              className="bg-accent-green rounded-br-full text-white px-8 py-2.5 font-bold hover:opacity-90 transition-opacity uppercase text-[10px] tracking-widest ml-4 cursor-pointer"
+              className="bg-accent-green rounded-br-full text-background px-8 py-2.5 hover:opacity-90 transition-opacity text-caption ml-4 cursor-pointer"
             >
               Get Started
             </button>
@@ -101,19 +101,19 @@ const Navbar = () => {
         <div className="flex flex-col text-center space-y-8 px-8">
           <button 
             onClick={() => handleScrollTo('#projects')}
-            className="text-white text-xs tracking-widest font-bold hover:text-accent-green transition-colors uppercase cursor-pointer"
+            className="text-white text-caption hover:text-accent-green transition-colors cursor-pointer"
           >
             Projects
           </button>
           <button 
             onClick={() => handleScrollTo('#process')}
-            className="text-white text-xs tracking-widest font-bold hover:text-accent-green transition-colors uppercase cursor-pointer"
+            className="text-white text-caption hover:text-accent-green transition-colors cursor-pointer"
           >
             Process
           </button>
           <button 
             onClick={() => handleScrollTo('#pricing')}
-            className="text-white text-xs tracking-widest font-bold hover:text-accent-green transition-colors uppercase cursor-pointer"
+            className="text-white text-caption hover:text-accent-green transition-colors cursor-pointer"
           >
             Pricing
           </button>
@@ -121,7 +121,7 @@ const Navbar = () => {
           {/* CTA */}
           <button 
             onClick={handleCtaClick}
-            className="bg-accent-green rounded-br-[2rem] text-white px-8 py-5 font-bold hover:opacity-90 transition-opacity uppercase text-xs tracking-widest text-center w-full mt-4 cursor-pointer"
+            className="bg-accent-green rounded-br-[2rem] text-white px-8 py-5 hover:opacity-90 transition-opacity text-caption text-center w-full mt-4 cursor-pointer"
           >
             Get Started
           </button>

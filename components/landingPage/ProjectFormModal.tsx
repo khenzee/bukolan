@@ -395,10 +395,10 @@ const ProjectFormModal = () => {
             {/* Close + Title */}
             <div className="flex items-start justify-between mb-5">
               <div>
-                <h2 className="text-2xl sm:text-3xl font-bold uppercase tracking-tight">
+                <h3 className="">
                   Start Your <span className="text-foreground/40">{config.heading}</span> Project
-                </h2>
-                <p className="text-xs text-foreground/50 uppercase tracking-widest mt-1.5 font-medium">
+                </h3>
+                <p className="text-caption text-foreground/50 mt-1.5">
                   {config.subtitle}
                 </p>
               </div>
@@ -418,7 +418,7 @@ const ProjectFormModal = () => {
                   <button
                     key={tab}
                     onClick={() => handleTabChange(tab)}
-                    className={`px-4 py-1.5 rounded-full uppercase tracking-widest text-[10px] font-bold transition-all duration-300 ${
+                    className={`px-4 py-1.5 rounded-full text-caption transition-all duration-300 ${
                       activePlan === tab
                         ? 'bg-foreground text-background'
                         : 'text-foreground hover:bg-foreground/5'
@@ -428,7 +428,7 @@ const ProjectFormModal = () => {
                   </button>
                 ))}
               </div>
-              <span className="text-sm font-medium tracking-tight text-foreground/70">
+              <span className="text-small text-foreground/70">
                 {config.priceLabel && (
                   <span className="text-foreground/40 mr-1">{config.priceLabel}</span>
                 )}
@@ -447,8 +447,8 @@ const ProjectFormModal = () => {
             {status === 'success' && (
               <div className="absolute inset-0 bg-background/90 z-10 flex flex-col items-center justify-center animate-fadeIn">
                 <CheckCircle2 size={48} className="text-foreground mb-4 animate-bounce" />
-                <h3 className="text-xl font-bold uppercase tracking-widest">Inquiry Received</h3>
-                <p className="text-xs text-foreground/50 uppercase tracking-widest mt-2 px-6 text-center leading-relaxed">
+                <h4 className="">Inquiry Received</h4>
+                <p className="text-caption text-foreground/50 mt-2 px-6 text-center">
                   We{"'"}ll review your details and reach out via your preferred contact method within 24 hours.
                 </p>
               </div>
@@ -470,13 +470,13 @@ const ProjectFormModal = () => {
 
               {/* Personal Information */}
               <section>
-                <h3 className="text-xs uppercase tracking-widest font-bold text-foreground/40 mb-5 pb-3 border-b border-foreground/10">
+                <h4 className="text-caption text-foreground/40 mb-5 pb-3 border-b border-foreground/10">
                   Personal Information
-                </h3>
+                </h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4">
                   {config.personalFields.map((field) => (
                     <div key={field.name} className="space-y-1.5">
-                      <label className="text-[10px] uppercase tracking-widest font-bold text-foreground/50">
+                      <label className="text-caption text-foreground/50">
                         {field.label}
                       </label>
                       <input
@@ -485,7 +485,7 @@ const ProjectFormModal = () => {
                         value={personalInfo[field.name] || ''}
                         onChange={(e) => handlePersonalChange(field.name, e.target.value)}
                         placeholder={field.placeholder}
-                        className="w-full bg-transparent border border-foreground/20 px-3 py-2.5 outline-none focus:border-foreground transition-colors uppercase text-xs"
+                        className="w-full bg-transparent border border-foreground/20 px-3 py-2.5 outline-none focus:border-foreground transition-colors text-small"
                       />
                     </div>
                   ))}
@@ -494,13 +494,13 @@ const ProjectFormModal = () => {
 
               {/* Communication Preference */}
               <section>
-                <h3 className="text-xs uppercase tracking-widest font-bold text-foreground/40 mb-5 pb-3 border-b border-foreground/10">
+                <h4 className="text-caption text-foreground/40 mb-5 pb-3 border-b border-foreground/10">
                   Communication
-                </h3>
+                </h4>
                 <div className="space-y-3">
-                  <h4 className="text-[10px] uppercase tracking-widest font-bold text-foreground/60 mb-3">
+                  <h5 className="text-caption text-foreground/60 mb-3">
                     How would you like us to contact you?
-                  </h4>
+                  </h5>
                   <div className="flex flex-wrap gap-6">
                     {["email", "whatsapp", "call"].map((method) => (
                       <label
@@ -520,7 +520,7 @@ const ProjectFormModal = () => {
                           )}
                         </div>
                         <span
-                          className={`text-xs uppercase tracking-wider transition-colors ${
+                          className={`text-small transition-colors ${
                             contactPreference === method
                               ? 'text-foreground font-medium'
                               : 'text-foreground/60 group-hover:text-foreground'
@@ -537,17 +537,17 @@ const ProjectFormModal = () => {
               {/* Dynamic Sections */}
               {config.sections.map((section, sIdx) => (
                 <section key={sIdx}>
-                  <h3 className="text-xs uppercase tracking-widest font-bold text-foreground/40 mb-5 pb-3 border-b border-foreground/10">
+                  <h4 className="text-caption text-foreground/40 mb-5 pb-3 border-b border-foreground/10">
                     {section.title}
-                  </h3>
+                  </h4>
                   <div className={`grid gap-8 ${
                     section.groups.length > 1 ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1'
                   }`}>
                     {section.groups.map((group, gIdx) => (
                       <div key={gIdx} className="space-y-3">
-                        <h4 className="text-[10px] uppercase tracking-widest font-bold text-foreground/60 mb-3">
+                        <h5 className="text-caption text-foreground/60 mb-3">
                           {group.label}
-                        </h4>
+                        </h5>
                         <div className="space-y-2">
                           {group.options.map((option, oIdx) => {
                             const isMulti = group.type === 'multi';
@@ -583,7 +583,7 @@ const ProjectFormModal = () => {
                                   )}
                                 </div>
                                 <span
-                                  className={`text-xs uppercase tracking-wider transition-colors ${
+                                  className={`text-small transition-colors ${
                                     isChecked
                                       ? 'text-foreground font-medium'
                                       : 'text-foreground/60 group-hover:text-foreground'
@@ -603,11 +603,11 @@ const ProjectFormModal = () => {
 
               {/* Additional Information */}
               <section>
-                <h3 className="text-xs uppercase tracking-widest font-bold text-foreground/40 mb-5 pb-3 border-b border-foreground/10">
+                <h4 className="text-caption text-foreground/40 mb-5 pb-3 border-b border-foreground/10">
                   Additional Information
-                </h3>
+                </h4>
                 <div className="space-y-1.5">
-                  <label className="text-[10px] uppercase tracking-widest font-bold text-foreground/50">
+                  <label className="text-caption text-foreground/50">
                     {config.textareaLabel}
                   </label>
                   <textarea
@@ -615,7 +615,7 @@ const ProjectFormModal = () => {
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
                     placeholder={config.textareaPlaceholder}
-                    className="w-full bg-transparent border border-foreground/20 px-3 py-2.5 outline-none focus:border-foreground transition-colors uppercase text-xs resize-none"
+                    className="w-full bg-transparent border border-foreground/20 px-3 py-2.5 outline-none focus:border-foreground transition-colors text-small resize-none"
                   />
                 </div>
               </section>
@@ -626,7 +626,7 @@ const ProjectFormModal = () => {
                   <button
                     type="submit"
                     disabled={status === 'submitting'}
-                    className="flex-1 py-4 border border-foreground text-foreground hover:bg-foreground hover:text-background uppercase tracking-widest text-xs font-bold transition-all duration-500 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex-1 py-4 border border-foreground text-foreground hover:bg-foreground hover:text-background text-caption transition-all duration-500 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {status === 'submitting' ? (
                       <>
@@ -641,19 +641,19 @@ const ProjectFormModal = () => {
                     <button
                       type="button"
                       onClick={() => handleTabChange(config.nextTier!.tier)}
-                      className="py-4 px-6 border border-foreground/20 text-foreground/50 hover:border-foreground hover:text-foreground uppercase tracking-widest text-xs font-bold transition-all duration-300"
+                      className="py-4 px-6 border border-foreground/20 text-foreground/50 hover:border-foreground hover:text-foreground text-caption transition-all duration-300"
                     >
                       {config.nextTier.label}
                     </button>
                   )}
                 </div>
                 {status === 'error' && (
-                  <p className="text-[10px] text-red-500 uppercase tracking-widest text-center font-bold mb-4">
+                  <p className="text-caption text-red-500 text-center mb-4">
                     Something went wrong. Please try again.
                   </p>
                 )}
                 {config.notice && (
-                  <p className="text-[10px] text-foreground/40 uppercase tracking-widest text-center font-medium">
+                  <p className="text-caption text-foreground/40 text-center">
                     {config.notice}
                   </p>
                 )}

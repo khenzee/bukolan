@@ -75,14 +75,14 @@ const Process = () => {
                 className="w-full px-4 py-8"
               >
                 <div className="mx-auto w-full max-w-[320px] sm:max-w-sm aspect-3/4 sm:aspect-square flex flex-col items-center justify-center bg-background border border-foreground/20 rounded-xl p-8 shadow-xl">
-                  <p className='mb-6 text-center text-sm font-bold tracking-widest text-foreground/50'>0{step.id}</p>
+                  <p className='mb-6 text-center text-caption text-foreground/50'>0{step.id}</p>
                   <div className="w-16 h-16 mb-8 flex items-center justify-center rounded-2xl bg-foreground text-background">
                     <Icon size={28} strokeWidth={1.5} />
                   </div>
-                  <h3 className="mb-4 text-xl font-bold uppercase tracking-widest text-center">
+                  <h3 className="mb-4 text-center">
                     {step.title}
                   </h3>
-                  <p className="text-foreground/70 text-sm leading-relaxed text-center">
+                  <p className="text-foreground/70 text-small text-center">
                     {step.description}
                   </p>
                 </div>
@@ -95,18 +95,18 @@ const Process = () => {
         <div className="flex justify-center mt-8 z-20 relative px-4">
           <div className="flex items-center gap-1 border border-foreground rounded-full bg-background p-1 shadow-sm">
             {steps.map((step, index) => (
-              <button
-                key={step.id}
-                onClick={() => swiperInstance?.slideTo(index)}
-                className={`flex items-center justify-center w-8 h-8 rounded-full text-xs font-bold transition-all duration-300 ${
-                  activeIndex === index 
-                    ? 'bg-foreground text-background' 
-                    : 'bg-transparent text-foreground hover:bg-foreground/10'
-                }`}
-                aria-label={`Go to slide ${index + 1}`}
-              >
-                0{index + 1}
-              </button>
+                <button
+                  key={step.id}
+                  onClick={() => swiperInstance?.slideTo(index)}
+                  className={`flex items-center justify-center w-8 h-8 rounded-full text-caption transition-all duration-300 ${
+                    activeIndex === index 
+                      ? 'bg-foreground text-background' 
+                      : 'bg-transparent text-foreground hover:bg-foreground/10'
+                  }`}
+                  aria-label={`Go to slide ${index + 1}`}
+                >
+                  0{index + 1}
+                </button>
             ))}
           </div>
         </div>

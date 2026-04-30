@@ -19,7 +19,7 @@ const Hero = () => {
                   DIGITAL AGENCY FOR BUSINESSES AND INNOVATIVE MINDS.
                 </h1>
               </div>
-              <p className="text-gray-body font-bold max-w-2xl mx-auto">
+              <p className="text-gray-body max-w-2xl mx-auto">
                 I help growing businesses and startups design, build, and structure their digital systems from high-performing websites to internal tools with clarity and long-term thinking.
               </p>
             </div>

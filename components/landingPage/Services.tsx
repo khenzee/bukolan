@@ -26,9 +26,9 @@ const Services = () => {
     <section className="bg-foreground relative overflow-hidden">
       {/* Header Section */}
         <div className="py-16 px-4 bg-background">
-          <h1 className="text-foreground mx-auto max-w-3xl lg:text-center mb-6">
+          <h2 className="text-foreground mx-auto max-w-3xl lg:text-center mb-6">
             Our Services & Capabilities
-          </h1>
+          </h2>
         </div>
       <div className="relative mx-auto px-6 lg:px-0">
         {/* Editorial List Layout */}
@@ -47,16 +47,16 @@ const Services = () => {
                 {/* Left: Number & Title */}
               <div className="w-full lg:w-1/2 flex items-start gap-6 sm:gap-8">
 
-                <h1 className="">
+                <h3 className="">
                   {service.title}
-                </h1>
+                </h3>
               </div>
 
               {/* Right: Copy */}
               <div className="w-full lg:w-1/2 gap-4 flex flex-col justify-center max-w-xl lg:ml-auto mt-4 lg:mt-0">
-                <h3 className="">
+                <h4 className="">
                   {service.subtitle}
-                </h3>
+                </h4>
                 <p className="">
                   {service.details}
                 </p>

@@ -77,16 +77,16 @@ export default function WorksList() {
 
               {/* Text Container */}
               <div className="pt-5 pb-2">
-                <h2 className="text-xl md:text-2xl font-bold text-foreground tracking-tight transition-colors group-hover:text-accent-green">
+                <h3 className="text-foreground transition-colors group-hover:text-accent-green">
                   {project.title}
-                </h2>
+                </h3>
                 
                 <div className="flex items-center gap-2.5 mt-2 opacity-80">
-                  <p className="text-foreground/70 font-semibold text-xs md:text-sm uppercase tracking-wide">
+                  <p className="text-foreground/70 text-caption">
                     {project.category}
                   </p>
                   <span className="w-1 h-1 rounded-full bg-foreground/40 hidden md:block"></span>
-                  <p className="text-foreground/70 font-semibold text-xs md:text-sm uppercase tracking-wide hidden md:block">
+                  <p className="text-foreground/70 text-caption hidden md:block">
                     {project.year}
                   </p>
                 </div>
