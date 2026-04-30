@@ -51,51 +51,56 @@ const projects = [
   }
 ];
 
+import ScrollReveal from "@/components/ui/ScrollReveal";
+
 export default function WorksList() {
   return (
     <div className="w-full bg-white pb-24 md:pb-40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         
         {/* Standard Grid Layout: 1 col (mobile), 2 cols (tablet), 3 cols (desktop) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-x-10 md:gap-y-16">
-          {projects.map((project, index) => (
-            <Link 
-              key={index}
-              href={project.href}
-              className="group flex flex-col cursor-pointer w-full"
-            >
-              {/* Image Container */}
-              <div className="w-full aspect-[4/3] relative overflow-hidden rounded-[1.25rem] bg-gray-100 shadow-sm transition-shadow duration-500 group-hover:shadow-md">
-                <Image 
-                  src={project.src}
-                  alt={project.title}
-                  fill
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  className="object-cover transform transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-105"
-                />
-              </div>
-
-              {/* Text Container */}
-              <div className="pt-5 pb-2">
-                <h3 className="text-foreground transition-colors group-hover:text-accent-green">
-                  {project.title}
-                </h3>
-                
-                <div className="flex items-center gap-2.5 mt-2 opacity-80">
-                  <p className="text-foreground/70 text-caption">
-                    {project.category}
-                  </p>
-                  <span className="w-1 h-1 rounded-full bg-foreground/40 hidden md:block"></span>
-                  <p className="text-foreground/70 text-caption hidden md:block">
-                    {project.year}
-                  </p>
+        <ScrollReveal stagger={0.15}>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-x-10 md:gap-y-16">
+            {projects.map((project, index) => (
+              <Link 
+                key={index}
+                href={project.href}
+                className="group flex flex-col cursor-pointer w-full"
+              >
+                {/* Image Container */}
+                <div className="w-full aspect-[4/3] relative overflow-hidden rounded-[1.25rem] bg-gray-100 shadow-sm transition-shadow duration-500 group-hover:shadow-md">
+                  <Image 
+                    src={project.src}
+                    alt={project.title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    className="object-cover transform transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-105"
+                  />
                 </div>
-              </div>
-            </Link>
-          ))}
-        </div>
+
+                {/* Text Container */}
+                <div className="pt-5 pb-2">
+                  <h3 className="text-foreground transition-colors group-hover:text-accent-green">
+                    {project.title}
+                  </h3>
+                  
+                  <div className="flex items-center gap-2.5 mt-2 opacity-80">
+                    <p className="text-foreground/70 text-caption">
+                      {project.category}
+                    </p>
+                    <span className="w-1 h-1 rounded-full bg-foreground/40 hidden md:block"></span>
+                    <p className="text-foreground/70 text-caption hidden md:block">
+                      {project.year}
+                    </p>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </ScrollReveal>
 
       </div>
     </div>
   );
 }
+

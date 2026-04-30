@@ -1,6 +1,26 @@
+"use client";
+
+import React, { useRef } from 'react'
 import HeroReveal from './heroReveal'
+import gsap from 'gsap'
+import { useGSAP } from '@gsap/react'
 
 const Hero = () => {
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  useGSAP(() => {
+    const tl = gsap.timeline();
+    
+    tl.from(contentRef.current?.querySelectorAll('h1, p') || [], {
+      y: 40,
+      opacity: 0,
+      duration: 1.2,
+      stagger: 0.2,
+      ease: 'power3.out',
+      delay: 0.5
+    });
+  }, { scope: contentRef });
+
   return (
     <section className="relative w-full overflow-hidden">
       <HeroReveal
@@ -10,7 +30,7 @@ const Hero = () => {
         blurAmount={16}
       >
         {/* Hero Content — rendered on top of the reveal effect */}
-        <div className="max-w-7xl min-h-dvh flex flex-col justify-center items-center lg:justify-between py-24 lg:py-40 mx-auto px-4 sm:px-6 lg:px-8">
+        <div ref={contentRef} className="max-w-7xl min-h-dvh flex flex-col justify-center items-center lg:justify-between py-24 lg:py-40 mx-auto px-4 sm:px-6 lg:px-8">
           <div className="pb-12 mt-8 lg:mt-0">
             {/* Left Column */}
             <div className="space-y-6 lg:space-y-8 mt-16 text-center max-w-3xl mx-auto">

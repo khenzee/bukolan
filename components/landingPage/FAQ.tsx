@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { Plus } from 'lucide-react';
+import ScrollReveal from "@/components/ui/ScrollReveal";
 
 const faqs = [
   {
@@ -36,58 +37,62 @@ const FAQ = () => {
           
           {/* Left Column: Title */}
           <div className="lg:col-span-5">
-            <div className="sticky top-32">
-              <span className="text-caption text-foreground/40 block mb-6">Common Inquiries</span>
-              <h2 className="mb-8">
-                Answers to frequently asked questions about our process.
-              </h2>
-              <p className="text-foreground/60 max-w-sm">
-                If you have a specific question not covered here, feel free to reach out directly via the form below.
-              </p>
-            </div>
+            <ScrollReveal direction="up" distance={30}>
+              <div className="sticky top-32">
+                <span className="text-caption text-foreground/40 block mb-6">Common Inquiries</span>
+                <h2 className="mb-8">
+                  Answers to frequently asked questions about our process.
+                </h2>
+                <p className="text-foreground/60 max-w-sm">
+                  If you have a specific question not covered here, feel free to reach out directly via the form below.
+                </p>
+              </div>
+            </ScrollReveal>
           </div>
 
           {/* Right Column: Accordion */}
           <div className="lg:col-span-7">
-            <div className="border-t border-foreground/10">
-              {faqs.map((faq, index) => (
-                <div 
-                  key={index} 
-                  className={`border-b border-foreground/10 transition-colors duration-500 ${openIndex === index ? 'bg-foreground/2' : 'hover:bg-foreground/1'}`}
-                >
-                  <button 
-                    onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                    className="w-full flex items-start justify-between py-8 lg:py-12 text-left group"
-                  >
-                    <div className="flex gap-8 lg:gap-12 items-start pr-8">
-                      <span className="text-caption text-foreground/30 mt-1.5 shrink-0">
-                        {faq.id}
-                      </span>
-                      <h3 className={`transition-colors duration-300 ${openIndex === index ? 'text-foreground' : 'text-foreground/80 group-hover:text-foreground'}`}>
-                        {faq.question}
-                      </h3>
-                    </div>
-                    <div className={`mt-1.5 shrink-0 transition-transform duration-500 ${openIndex === index ? 'rotate-45' : 'rotate-0'}`}>
-                      <Plus size={24} strokeWidth={1.5} className="text-foreground/40" />
-                    </div>
-                  </button>
-                  
+            <ScrollReveal direction="up" distance={40} delay={0.1}>
+              <div className="border-t border-foreground/10">
+                {faqs.map((faq, index) => (
                   <div 
-                    className={`overflow-hidden transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-                      openIndex === index ? 'max-h-[300px] opacity-100 pb-12 lg:pb-16' : 'max-h-0 opacity-0'
-                    }`}
+                    key={index} 
+                    className={`border-b border-foreground/10 transition-colors duration-500 ${openIndex === index ? 'bg-foreground/2' : 'hover:bg-foreground/1'}`}
                   >
-                    <div className="flex gap-8 lg:gap-12 pl-14 lg:pl-20">
-                      <div className="max-w-xl">
-                        <p className="text-foreground/60">
-                          {faq.answer}
-                        </p>
+                    <button 
+                      onClick={() => setOpenIndex(openIndex === index ? null : index)}
+                      className="w-full flex items-start justify-between py-8 lg:py-12 text-left group"
+                    >
+                      <div className="flex gap-8 lg:gap-12 items-start pr-8">
+                        <span className="text-caption text-foreground/30 mt-1.5 shrink-0">
+                          {faq.id}
+                        </span>
+                        <h3 className={`transition-colors duration-300 ${openIndex === index ? 'text-foreground' : 'text-foreground/80 group-hover:text-foreground'}`}>
+                          {faq.question}
+                        </h3>
+                      </div>
+                      <div className={`mt-1.5 shrink-0 transition-transform duration-500 ${openIndex === index ? 'rotate-45' : 'rotate-0'}`}>
+                        <Plus size={24} strokeWidth={1.5} className="text-foreground/40" />
+                      </div>
+                    </button>
+                    
+                    <div 
+                      className={`overflow-hidden transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                        openIndex === index ? 'max-h-[300px] opacity-100 pb-12 lg:pb-16' : 'max-h-0 opacity-0'
+                      }`}
+                    >
+                      <div className="flex gap-8 lg:gap-12 pl-14 lg:pl-20">
+                        <div className="max-w-xl">
+                          <p className="text-foreground/60">
+                            {faq.answer}
+                          </p>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            </ScrollReveal>
           </div>
 
         </div>
