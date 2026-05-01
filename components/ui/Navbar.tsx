@@ -37,7 +37,11 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-6 py-4">
         <div className="flex justify-between gap-12 items-center">
           {/* Logo */}
-          <Link href="/" className="shrink-0 flex items-center group">
+          <button 
+            onClick={() => handleScrollTo('#hero')} 
+            className="shrink-0 flex items-center group cursor-pointer"
+            aria-label="Scroll to top"
+          >
             <Image 
               src="/images/divulge-text-white-logo.svg" 
               alt="Divulge Digital" 
@@ -46,7 +50,7 @@ const Navbar = () => {
               className="h-8 w-auto"
               priority
             />
-          </Link>
+          </button>
 
           {/* Links for Desktop */}
           <div className="hidden md:flex items-center text-background space-x-8">

@@ -64,7 +64,7 @@ const Footer = () => {
                   <Link href="mailto:hello@divulge.digital" className="block font-medium hover:text-background/70 transition-colors">
                     hello@divulge.digital
                   </Link>
-                  <p className="font-medium">+234 704 580 1111</p>
+                  <p className="font-medium">+234 806 504 3934</p>
                 </div>
               </div>
 

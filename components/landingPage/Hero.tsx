@@ -22,7 +22,7 @@ const Hero = () => {
   }, { scope: contentRef });
 
   return (
-    <section className="relative w-full overflow-hidden">
+    <section id="hero" className="relative w-full overflow-hidden">
       <HeroReveal
         imageSrc="/images/hero-img.png"
         revealRadius={130}
